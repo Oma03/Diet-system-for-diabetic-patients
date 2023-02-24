@@ -41,10 +41,12 @@
     <div class="main__container">
         <div class="main__content">
             <h2>SIGN UP</h2>
-            {% if error %}
-            <div class="main__alert" role="alert">
-                {{ error }}
-            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endif %}
             <form class="main__form" method="post">
                 {% csrf_token %}

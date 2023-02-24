@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django .contrib.auth import login, logout, authenticate
-# from django.shortcuts import redirect
+from django.contrib import messages
 from .models import Contact
 
 
@@ -23,8 +23,8 @@ def signup(request):
         if request.POST['pass1'] == request.POST['pass2']:
             try:
                 User.objects.get(username=request.POST['username'])
-                return render(request, 'diet/signup.html',
-                              {'error': 'Username already taken. '})
+                messages.error(request, 'Username is taken')
+                return render(request, 'diet/signup.html')
             except:
                 user = User.objects.create_user(username=request.POST['username'],
                                                 password=request.POST['pass2'])
@@ -41,7 +41,8 @@ def signup(request):
                 login(request, user)
                 return render(request, 'diet/index.html')
         else:
-            return render(request, 'diet/signup.html', {'error': 'Passwords do not match'})
+            messages.error(request, 'Passwords do not match')
+            return render(request, 'diet/signup.html')
 
 
 def loginaccount(request):
@@ -52,7 +53,8 @@ def loginaccount(request):
                             username=request.POST['username'],
                             password=request.POST['pass2'])
         if user is None:
-            return render(request, 'diet/loginaccount.html', {'error': 'Username and Password do not match'})
+            messages.error(request, 'Username and Password do not match')
+            return render(request, 'diet/loginaccount.html')
         else:
             login(request, user)
             return render(request, 'diet/index.html')
