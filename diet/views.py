@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django .contrib.auth import login, logout, authenticate
 # from django.shortcuts import redirect
-from .models import Contact
+from .models import Contact, Details
 
 # Create your views here.
 
@@ -27,12 +27,15 @@ def signup(request):
             except:
                 user = User.objects.create_user(username=request.POST['username'],
                                                 password=request.POST['pass2'])
+                                                # firstname=request.POST['firstname'],
+                                                # lastname=request.POST['surname'])
+
                 user.save()
                 surname = request.POST.get('surname')
                 firstname = request.POST.get('firstname')
                 email = request.POST.get('email')
                 number = request.POST.get('number')
-                contacts = Contact(surname=surname, firstname=firstname, email=email, number=number, )
+                contacts = Contact(user=user, surname=surname, firstname=firstname, email=email, number=number, )
                 contacts.save()
                 login(request, user)
                 return render(request, 'diet/index.html')
@@ -60,4 +63,5 @@ def logoutaccount(request):
 
 
 def details(request):
+
     return render(request, 'diet/details.html')
