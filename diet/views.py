@@ -4,7 +4,6 @@ from django .contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .models import Contact
 
-
 # Create your views here.
 
 
@@ -21,19 +20,24 @@ def signup(request):
         return render(request, 'diet/signup.html')
     else:
         if request.POST['pass1'] == request.POST['pass2']:
+            username = request.POST['username']
+            email = request.POST['email']
+            pass2 = request.POST['pass2']
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
             try:
-                User.objects.get(username=request.POST['username'])
+                User.objects.get(username=username)
                 messages.error(request, 'Username is taken')
                 return render(request, 'diet/signup.html')
             except:
-                user = User.objects.create_user(username=request.POST['username'],
-                                                password=request.POST['pass2'])
-                                                # firstname=request.POST['firstname'],
-                                                # lastname=request.POST['surname'])
-
+                user = User.objects.create_user(username=username, email=email,
+                                                password=pass2)
+                user.first_name = first_name
+                user.last_name = last_name
                 user.save()
-                surname = request.POST.get('surname')
-                firstname = request.POST.get('firstname')
+
+                surname = request.POST.get('last_name')
+                firstname = request.POST.get('first_name')
                 email = request.POST.get('email')
                 number = request.POST.get('number')
                 contacts = Contact(user=user, surname=surname, firstname=firstname, email=email, number=number, )
