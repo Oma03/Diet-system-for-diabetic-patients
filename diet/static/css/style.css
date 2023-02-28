@@ -193,11 +193,12 @@
 }
 /* Hero Section css */
 
+
 .main {
     background-color: #141414;
 }
 
-.main__container {
+.main__container-login {
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
@@ -209,6 +210,21 @@
     width: 100%;
     max-width: 1300px;
     padding: 0 50px;
+    padding-bottom: 50px;
+}
+
+.main__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-self: center;
+    margin: 0 auto;
+    background-color: #141414;
+    z-index: 1;
+    width: 100%;
+    max-width: 1300px;
+    padding: 0 50px;
+    padding-bottom: 50px;
 }
 
 .main__content h1 {
@@ -276,7 +292,14 @@
 
 .main__btn a {
     position: relative;
-    z-index: 2;
+    z-index: 5;
+    color: #fff;
+    text-decoration: none;
+}
+
+.main__btn span {
+    position: relative;
+    z-index: 5;
     color: #fff;
     text-decoration: none;
 }
@@ -289,6 +312,7 @@
     width: 0;
     height: 100%;
     background: #4837ff;
+    color: #fff;
     transition: all 0.35s;
     border-radius: 4px;
 }

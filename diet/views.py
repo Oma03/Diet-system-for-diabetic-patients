@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django .contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from .models import Contact
+from .models import Contact, DetailsN
+
 
 # Create your views here.
 
@@ -70,5 +71,55 @@ def logoutaccount(request):
 
 
 def details(request):
+    if request.method == 'GET':
+        return render(request, 'diet/details.html')
+    else:
+        diabetes_type = request.POST['diabetes_type']
+        weight = request.POST['weight']
+        height = request.POST['height']
+        gender = request.POST['gender']
+        activity_level = request.POST['activity_level']
+        age = request.POST['age']
+
+        details_b = DetailsN(diabetes_type=diabetes_type, weight=weight, height=height, gender=gender,
+                             activity_level=activity_level, age=age)
+        details_b.save()
+
+    request.session['details_b_saved'] = True
 
     return render(request, 'diet/details.html')
+
+
+def bmr(request):
+
+    # Retrieving User's details from the database
+    details_n = DetailsN.objects.get(user=request.user)
+
+    # Calculate the user's BMR based on their gender, weight, height, and age
+    if details_n.gender == 'Female'.casefold():
+        bmr_calc = 447.6 + (9.2 * details_n.weight) + (3.1 * details_n.height) - (4.3 * details_n.age)
+    else:
+        bmr_calc = 88.36 + (13.4 * details_n.weight) + (4.8 * details_n.height) - (5.7 * details_n.age)
+
+    # Adjust the BMR based on the user's activity level
+    if details_n.activity_level == 'Sedentary (little or no exercise)'.casefold():
+        daily_calories = bmr_calc * 1.2
+    elif details_n.activity_level == 'Lightly active (light exercise 1-3 days per week)'.casefold():
+        daily_calories = bmr_calc * 1.375
+    elif details_n.activity_level == 'Moderately active (moderate exercise 3-5 days per week)'.casefold():
+        daily_calories = bmr_calc * 1.55
+    elif details_n.activity_level == 'Very active (hard exercise 6-7 days per week)'.casefold():
+        daily_calories = bmr_calc * 1.725
+    else:
+        daily_calories = bmr_calc * 1.9
+
+    details_s = DetailsN(bmr=bmr_calc, daily_calories=daily_calories)
+    details_s.save()
+
+    # Render the calculated values to the user
+    context = {
+        'bmr_calc': bmr_calc,
+        'daily_calories': daily_calories,
+    }
+
+    return render(request, 'diet/bmr.html', context)

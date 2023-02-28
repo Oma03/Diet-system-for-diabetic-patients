@@ -16,9 +16,16 @@ class Contact(models.Model):
         return self.firstname
 
 
-# class Details(models.Model):
-#     user = models.OneToOneField(User, on_delete=CASCADE, null=True)
-#     diabetes_type = models.Field()
-#     weight = models.FloatField()
-#     height = models.FloatField()
-#     gender = models.Field()
+class DetailsN(models.Model):
+    user = models.OneToOneField(User, on_delete=CASCADE, null=True)
+    diabetes_type = models.CharField(max_length=100)
+    weight = models.FloatField()
+    height = models.FloatField()
+    gender = models.CharField(max_length=50)
+    activity_level = models.CharField(max_length=500)
+    age = models.IntegerField()
+    bmr = models.CharField(max_length=50, null=True)
+    daily_calories = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        return self.user.username
