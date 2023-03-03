@@ -53,38 +53,48 @@
     <div class="main__container">
         <div class="main__content">
             <h2>DETAILS </h2>
-            {% if error %}
-            <div class="main__alert" role="alert">
-                {{ error }}
-            </div>
-            {% endif %}
-            <form class="main__form" method="post">
-                {% csrf_token %}
-                <select class="main__field" name="diabetes_type">
-                    <option disabled selected >Diabetes Type</option>
-                    <option >Type 1</option>
-                    <option >Type 2</option>
-                    <option >Gestational</option>
-                </select>
-                <input type="text" class="main__field" placeholder="Weight(in Kg)" name="weight">
-                <input type="text" class="main__field" placeholder="Height(in cm)" name="height">
-                <select class="main__field" name="gender">
-                    <option disabled selected >Gender</option>
-                    <option >Female</option>
-                    <option >Male</option>
-                </select>
-                <select class="main__field" name="activity_level">
-                    <option disabled selected >Activity Level</option>
-                    <option >Sedentary (little or no exercise)</option>
-                    <option >Lightly active (light exercise 1-3 days per week)</option>
-                    <option >Moderately active (moderate exercise 3-5 days per week)</option>
-                    <option >Very active (hard exercise 6-7 days per week)</option>
-                    <option >Extra active (very hard exercise, physical job or training twice per day)</option>
-                </select>
-                <input type="text" class="main__field" placeholder="Age" name="age">
-                <button type="submit" class="main__btn"><a href="{% url 'diet:bmr' %}"></a>Submit</button>
-            </form>
+            {% if has_detail %}
+                <form class="main__form">
+                    <h2>{{ user.username }}</h2>
+                    <input type="text" id="bmr" name="bmr" value="BMR: {{ detail.bmr }}" class="main__field">
+                    <input type="text" id="daily-calories" name="daily_calories" value="Daily Calorie needs: {{ detail.daily_calories }}" class="main__field">
+                    <input type="text" id="age" name="daily_calories" value="Age: {{ detail.age }}" class="main__field">
+                    <button class="main__btn"><a href="{% url 'diet:signup' %}">Update</a></button>
+                </form>
+            {% else %}
+                {% if error %}
+                <div class="main__alert" role="alert">
+                    {{ error }}
+                </div>
+                {% endif %}
+                <form class="main__form" method="post">
+                    {% csrf_token %}
+                    <select class="main__field" name="diabetes_type">
+                        <option disabled selected >Diabetes Type</option>
+                        <option >Type 1</option>
+                        <option >Type 2</option>
+                        <option >Gestational</option>
+                    </select>
+                    <input type="text" class="main__field" placeholder="Weight(in Kg)" name="weight">
+                    <input type="text" class="main__field" placeholder="Height(in cm)" name="height">
+                    <select class="main__field" name="gender">
+                        <option disabled selected >Gender</option>
+                        <option >Female</option>
+                        <option >Male</option>
+                    </select>
+                    <select class="main__field" name="activity_level">
+                        <option disabled selected >Activity Level</option>
+                        <option >Sedentary (little or no exercise)</option>
+                        <option >Lightly active (light exercise 1-3 days per week)</option>
+                        <option >Moderately active (moderate exercise 3-5 days per week)</option>
+                        <option >Very active (hard exercise 6-7 days per week)</option>
+                        <option >Extra active (very hard exercise, physical job or training twice per day)</option>
+                    </select>
+                    <input type="text" class="main__field" placeholder="Age" name="age">
+                    <button type="submit" class="main__btn"><span>Submit</span></button>
+                </form>
         </div>
+            {% endif %}
         <div class="main__img--container">
             <img src="{% static 'images/b.jpg' %}" alt="img" id="main__img">
         </div>

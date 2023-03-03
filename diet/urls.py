@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from .views import details
 app_name = "diet"
 
 urlpatterns = [
@@ -10,5 +10,4 @@ urlpatterns = [
     path('loginaccount/', views.loginaccount, name='loginaccount'),
     path('logout/', views.logoutaccount, name='logoutaccount'),
     path('details/', views.details, name='details'),
-    path('bmr/', views.bmr, name='bmr'),
 ]

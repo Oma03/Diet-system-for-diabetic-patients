@@ -1,10 +1,50 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0"/>
+    <title>DIET DOCTOR</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
 </head>
 <body>
-
-</body>
-</html>
+<!--navbar section-->
+<nav class="navbar">
+    <div class="navbar__container">
+        <a href="/" id="navbar__logo">DIETD.</a>
+        <div class="navbar__toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="navbar__menu">
+            <li class="navbar__item">
+                <a href="{% url 'diet:home' %}" class="navbar__links">Home</a>
+            </li>
+            <li class="navbar__item">
+                <a href="{% url 'diet:about' %}" class="navbar__links">About</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="navbar__item">
+                    <a class="navbar__links" href="{% url 'diet:details' %}">
+                    Details
+                    </a>
+                </li>
+                <li class="navbar__item">
+                    <a class="navbar__links" href="{% url 'diet:logoutaccount' %}">
+                    Logout ({{ user.username }})
+                    </a>
+                </li>
+            {% else %}
+                <li class="navbar__item">
+                    <a href="{% url 'diet:signup' %}" class="navbar__links">Sign Up</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="{% url 'diet:loginaccount' %}" class="navbar__links">Log In</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<!--Hero Section-->
