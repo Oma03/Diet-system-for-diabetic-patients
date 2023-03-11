@@ -1,9 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.contrib.auth.models import User
 from django .contrib.auth import login, logout, authenticate
 from django .contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Contact, DetailsN
+from .models import Contact, DetailsN, DCalorie
 
 
 # Create your views here.
@@ -73,46 +73,97 @@ def logoutaccount(request):
 
 @ login_required
 def details(request):
+    try:
+        details_b = DetailsN.objects.get(user=request.user)
+        details_c = DCalorie.objects.get(user=request.user)
+        saved = True
+    except DetailsN.DoesNotExist:
+        saved = False
+        details_b = None
+
+    if details_b is not None:
+        return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
+
     if request.method == 'GET':
         return render(request, 'diet/details.html')
     else:
-        user = request.user
-        has_detail = DetailsN.objects.filter(user=user).exists()
-        detail = DetailsN.objects.get(user=user)
         diabetes_type = request.POST['diabetes_type']
         weight = request.POST['weight']
         height = request.POST['height']
         gender = request.POST['gender']
+        pregnant = request.POST['pregnant']
         activity_level = request.POST['activity_level']
         age = request.POST['age']
 
+        # Calculate the user's BMI
+        bmi = round(int(weight) / ((int(height) / 100) ** 2))
+
+        # Adjust factor based on BMI
+        if bmi < 18.5:  # Underweight
+            factor = 1.2
+        elif 18.5 <= bmi < 25:  # Normal weight
+            factor = 1.0
+        elif 25 <= bmi < 30:  # Overweight
+            factor = 0.8
+        else:  # Obese
+            factor = 0.6
+
         # Calculate the user's BMR based on their gender, weight, height, and age
         if gender == 'Female'.casefold():
-            bmr_calc = 447.6 + (9.2 * int(weight)) + (3.1 * int(height)) - (4.3 * int(age))
+            bmr_calc = round(447.6 + (9.2 * int(weight)) + (3.1 * int(height)) - (4.3 * int(age)))
         else:
-            bmr_calc = 88.36 + (13.4 * int(weight)) + (4.8 * int(height)) - (5.7 * int(age))
+            bmr_calc = round(88.36 + (13.4 * int(weight)) + (4.8 * int(height)) - (5.7 * int(age)))
 
         # Adjust the BMR based on the user's activity level
         if activity_level == 'Sedentary (little or no exercise)'.casefold():
-            daily_calories = bmr_calc * 1.2
+            daily_calories = round(bmr_calc * 1.2 * factor)
         elif activity_level == 'Lightly active (light exercise 1-3 days per week)'.casefold():
-            daily_calories = bmr_calc * 1.375
+            daily_calories = round(bmr_calc * 1.375 * factor)
         elif activity_level == 'Moderately active (moderate exercise 3-5 days per week)'.casefold():
-            daily_calories = bmr_calc * 1.55
+            daily_calories = round(bmr_calc * 1.55 * factor)
         elif activity_level == 'Very active (hard exercise 6-7 days per week)'.casefold():
-            daily_calories = bmr_calc * 1.725
+            daily_calories = round(bmr_calc * 1.725 * factor)
         else:
-            daily_calories = bmr_calc * 1.9
-            details_b = DetailsN(diabetes_type=diabetes_type, weight=weight, height=height, gender=gender,
-                                 activity_level=activity_level, age=age, bmr=bmr_calc, daily_calories=daily_calories)
+            daily_calories = round(bmr_calc * 1.9 * factor)
+
+        # calculate macronutrient breakdown based on diabetes type
+        if diabetes_type == 'type1':
+            carb_percentage = 45
+            protein_percentage = 20
+            fat_percentage = 35
+        elif diabetes_type == 'type2':
+            carb_percentage = 40
+            protein_percentage = 30
+            fat_percentage = 30
+        else:
+            carb_percentage = 50
+            protein_percentage = 25
+            fat_percentage = 25
+
+        # adjust macronutrient breakdown for pregnant people
+        if pregnant == 'yes':
+            carb_percentage += 5
+            protein_percentage += 5
+            fat_percentage -= 10
+
+        # calculate calories and macros based on macronutrient breakdown
+        carb_grams = round(daily_calories * (carb_percentage / 100) / 4)
+        protein_grams = round(daily_calories * (protein_percentage / 100) / 4)
+        fat_grams = round(daily_calories * (fat_percentage / 100) / 9)
+
+        if not saved:
+            details_b = DetailsN(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
+                                 gender=gender, pregnant=pregnant, activity_level=activity_level, age=age, bmr=bmr_calc,
+                                 bmi=bmi, daily_calories=daily_calories)
             details_b.save()
+            saved = True
 
-        # Render the calculated values to the user
-        context = {
-            'user': user,
-            'has_detail': has_detail,
-            'detail': detail,
-        }
+        calorie = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams)
+        calorie.save()
 
-    return render(request, 'diet/details.html', context)
+    return render(request, 'diet/details.html', {'details_b': details_b, 'saved': saved})
 
+
+def bmr(request):
+
+    return render(request, 'diet/bmr.html')

@@ -53,15 +53,6 @@
     <div class="main__container">
         <div class="main__content">
             <h2>DETAILS </h2>
-            {% if has_detail %}
-                <form class="main__form">
-                    <h2>{{ user.username }}</h2>
-                    <input type="text" id="bmr" name="bmr" value="BMR: {{ detail.bmr }}" class="main__field">
-                    <input type="text" id="daily-calories" name="daily_calories" value="Daily Calorie needs: {{ detail.daily_calories }}" class="main__field">
-                    <input type="text" id="age" name="daily_calories" value="Age: {{ detail.age }}" class="main__field">
-                    <button class="main__btn"><a href="{% url 'diet:signup' %}">Update</a></button>
-                </form>
-            {% else %}
                 {% if error %}
                 <div class="main__alert" role="alert">
                     {{ error }}
@@ -81,6 +72,11 @@
                         <option disabled selected >Gender</option>
                         <option >Female</option>
                         <option >Male</option>
+                    </select>
+                    <select class="main__field" name="pregnant">
+                        <option disabled selected >Pregnancy Status</option>
+                        <option >Yes</option>
+                        <option >No</option>
                     </select>
                     <select class="main__field" name="activity_level">
                         <option disabled selected >Activity Level</option>

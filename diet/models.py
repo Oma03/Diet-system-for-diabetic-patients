@@ -22,10 +22,22 @@ class DetailsN(models.Model):
     weight = models.FloatField()
     height = models.FloatField()
     gender = models.CharField(max_length=50)
+    pregnant = models.CharField(max_length=10,  null=True)
     activity_level = models.CharField(max_length=500)
     age = models.IntegerField()
     bmr = models.CharField(max_length=50, null=True)
+    bmi = models.CharField(max_length=100, null=True)
     daily_calories = models.CharField(max_length=100, null=True)
 
-    # def __str__(self):
-    #     return self.user.username + " - DetailsN"
+    def __str__(self):
+        return self.user.username
+
+
+class DCalorie(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    carb_grams = models.CharField(max_length=100)
+    protein_grams = models.CharField(max_length=100)
+    fat_grams = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.user.username

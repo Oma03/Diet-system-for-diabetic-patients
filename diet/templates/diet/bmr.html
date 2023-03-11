@@ -48,3 +48,34 @@
     </div>
 </nav>
 <!--Hero Section-->
+
+<div class="main">
+    <div class="main__container">
+        <div class="main__content">
+            <h2>DETAILS </h2>
+            <form class="main__form">
+                <h2>{{ user.username }}</h2>
+                <input type="text" id="bmi" name="bmi" value="BMI: {{ details_b.bmi }} Kg/m" class="main__field">
+                <input type="text" id="bmr" name="bmr" value="BMR: {{ details_b.bmr }} Kcal/day" class="main__field">
+                <input type="text" id="daily-calories" name="daily_calories"
+                       value="Daily Calorie needs: {{ details_b.daily_calories }} Kcal/day" class="main__field">
+                <input type="text" id="age" name="age" value="Age: {{ details_b.age }}" class="main__field">
+                <input type="text" id="carb_grams" name="carb_grams"
+                       value="Carb Gram: {{ details_c.carb_grams }} /day" class="main__field">
+                <input type="text" id="protein_grams" name="protein_grams"
+                       value="Protein Gram {{ details_c.protein_grams }} /day" class="main__field">
+                <input type="text" id="fat_grams" name="fat_grams"
+                       value="Fat Gram: {{ details_c.fat_grams }} /day" class="main__field">
+                <button class="main__btn"><a href="{% url 'diet:details' %}">Update</a></button>
+                <button class="main__btn"><a href="{% url 'diet:details' %}">Create diet</a></button>
+            </form>
+        </div>
+        <div class="main__img--container">
+            <img src="{% static 'images/b.jpg' %}" alt="img" id="main__img">
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
