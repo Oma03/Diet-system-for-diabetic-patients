@@ -66,7 +66,7 @@
                        value="Protein Gram {{ details_c.protein_grams }} /day" class="main__field">
                 <input type="text" id="fat_grams" name="fat_grams"
                        value="Fat Gram: {{ details_c.fat_grams }} /day" class="main__field">
-                <button class="main__btn"><a href="{% url 'diet:details' %}">Update</a></button>
+                <button class="main__btn"><a href="{% url 'diet:update' %}">Update</a></button>
                 <button class="main__btn"><a href="{% url 'diet:details' %}">Create diet</a></button>
             </form>
         </div>
