@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.models import User
 from django .contrib.auth import login, logout, authenticate
 from django .contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 from .models import Contact, DetailsN, DCalorie
 
 
@@ -170,13 +171,13 @@ def bmr(request):
 
 
 def update(request):
-    try:
-        details_b = DetailsN.objects.get(user=request.user)
-        details_c = DCalorie.objects.get(user=request.user)
-        saved = True
-    except DetailsN.DoesNotExist:
-        saved = False
-        details_b = None
+    # try:
+    #     details_b = DetailsN.objects.get(user=request.user)
+    #     details_c = DCalorie.objects.get(user=request.user)
+    #     saved = True
+    # except DetailsN.DoesNotExist:
+    #     saved = False
+    #     details_b = None
 
     # if details_b is not None:
     #     return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
@@ -255,6 +256,14 @@ def update(request):
                          gender=gender, pregnant=pregnant, activity_level=activity_level, age=age, bmr=bmr_calc,
                          bmi=bmi, daily_calories=daily_calories)
         details_c.update(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams)
-        # return redirect('http://localhost:8000/details/', {'details_b': details_b, 'details_c': details_c})
 
-    return render(request, 'diet/bmr.html', {'details_b': details_b, 'saved': saved})
+        return HttpResponseRedirect('/bmr/')
+
+    # return render(request, 'diet/bmr.html', {'details_b': details_b, 'saved': saved})
+
+
+def create(request):
+
+    searchTerm = request.GET.get('search_food')
+
+    return render(request, 'diet/create.html', {'searchTerm': searchTerm})

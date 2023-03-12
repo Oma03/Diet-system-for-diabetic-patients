@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-from .views import details
 app_name = "diet"
 
 urlpatterns = [
@@ -12,4 +11,5 @@ urlpatterns = [
     path('details/', views.details, name='details'),
     path('update/', views.update, name='update'),
     path('bmr/', views.bmr, name='bmr'),
+    path('create/', views.create, name='create'),
 ]

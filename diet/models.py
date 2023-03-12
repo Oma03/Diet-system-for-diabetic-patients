@@ -41,3 +41,43 @@ class DCalorie(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class FoodList(models.Model):
+    Category = models.CharField(max_length=10000)
+    LocalName = models.CharField(max_length=20000000)
+    EnglishName = models.CharField(max_length=20000000)
+    ScientificName = models.CharField(max_length=20000000)
+    ENERC_kJ = models.CharField(max_length=20000)
+    ENERC_kcal = models.CharField(max_length=20000)
+    WATER_g = models.CharField(max_length=20000)
+    PROTCNT_g = models.CharField(max_length=20000)
+    FATCE_g = models.CharField(max_length=20000)
+    CHOCDF_g = models.CharField(max_length=20000)
+    FIB_g = models.CharField(max_length=20000)
+    ASH_g = models.CharField(max_length=20000)
+    Ca_mg = models.CharField(max_length=20000)
+    Fe_mg = models.CharField(max_length=20000)
+    Mg_mg = models.CharField(max_length=20000)
+    P_mg = models.CharField(max_length=20000)
+    K_mg = models.CharField(max_length=20000)
+    Na_mg = models.CharField(max_length=20000)
+    Zn_mg = models.CharField(max_length=20000)
+    Cu_mg = models.CharField(max_length=20000)
+    Mn_mg = models.CharField(max_length=20000)
+    VIT_A_RAE_mcg = models.CharField(max_length=20000)
+    RETOL_mcg = models.CharField(max_length=20000)
+    CARTB_mcg = models.CharField(max_length=20000)
+    VITDEQ_mcg = models.CharField(max_length=20000)
+    VITE_mg = models.CharField(max_length=20000)
+    THIA_mg = models.CharField(max_length=20000)
+    RIBF_mg = models.CharField(max_length=20000)
+    NIAEQ_mg = models.CharField(max_length=20000)
+    VIT_B6_mg = models.CharField(max_length=20000)
+    FOL_mcg = models.CharField(max_length=20000)
+    VITB12_mcg = models.CharField(max_length=20000)
+    VITC_mg = models.CharField(max_length=20000)
+    SearchName = models.CharField(max_length=2000000000)
+
+    def __str__(self):
+        return self.EnglishName
