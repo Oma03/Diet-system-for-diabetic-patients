@@ -3,8 +3,9 @@ from django.contrib.auth.models import User
 from django .contrib.auth import login, logout, authenticate
 from django .contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
 from django.http import HttpResponseRedirect
-from .models import Contact, DetailsN, DCalorie
+from .models import Contact, DetailsN, DCalorie, MealPlan
 
 
 # Create your views here.
@@ -43,7 +44,8 @@ def signup(request):
                 firstname = request.POST.get('first_name')
                 email = request.POST.get('email')
                 number = request.POST.get('number')
-                contacts = Contact(user=user, surname=surname, firstname=firstname, email=email, number=number, )
+                contacts = Contact(user=user, timezone='Africa/Lagos', surname=surname, firstname=firstname, email=email,
+                                   number=number, )
                 contacts.save()
                 login(request, user)
                 return render(request, 'diet/index.html')
@@ -265,5 +267,16 @@ def update(request):
 def create(request):
 
     searchTerm = request.GET.get('search_food')
+    current_time = timezone.now()
+    current_day = current_time.strftime('%A')
+    if request.method == 'POST':
+        meal_plan = MealPlan(user=request.user, day=current_day,
+                             breakfast=request.POST['breakfast'],
+                             lunch=request.POST['lunch'],
+                             snack=request.POST['snack'],
+                             dinner=request.POST['dinner'])
+        meal_plan.save()
+        # return HttpResponseRedirect('weekly_meal_plan')
 
-    return render(request, 'diet/create.html', {'searchTerm': searchTerm})
+    return render(request, 'diet/create.html', {'searchTerm': searchTerm, 'current_time': current_time,
+                                                'current_day': current_day})

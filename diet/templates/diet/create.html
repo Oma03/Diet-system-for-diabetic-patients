@@ -55,7 +55,22 @@
                 <form class="main__form" action="{% url 'diet:create' %}">
                   <input type="text" class="main__field" name="search_food" placeholder="Search meals">
                   <button type="submit" class="main__btn"><span>Search</span></button>
-                    Searching for {{ searchTerm }}
+<!--                    Searching for {{ searchTerm }}-->
+                </form>
+<!--                <p>Date:{{current_time}}</p>-->
+<!--                <p>Today:{{ current_day}}</p>-->
+                <h1>Meal Plan for Monday</h1>
+                <form method="POST" class="main__form">
+                    {% csrf_token %}
+                    <input type="text" name="breakfast" placeholder="Breakfast" class="main__field">
+                    <br>
+                    <input type="text" name="lunch" placeholder="Lunch" class="main__field">
+                    <br>
+                    <input type="text" name="Snack" placeholder="Snack" class="main__field">
+                    <br>
+                    <input type="text" name="Dinner" placeholder="Dinner" class="main__field">
+                    <br>
+                     <button type="submit" class="main__btn"><span>Save</span></button>
                 </form>
             </div>
       </div>
