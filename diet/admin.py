@@ -24,7 +24,7 @@ admin.site.register(FoodList, FoodListAdmin)
 
 
 class MealPlanAdmin(admin.ModelAdmin):
-    list_display = ('user', 'week_id', 'day', 'breakfast', 'lunch', 'snack', 'dinner')
+    list_display = ('user', 'week_id', 'day', 'breakfast', 'lunch', 'snack', 'dinner', 'created_at')
 
 
 admin.site.register(MealPlan, MealPlanAdmin)

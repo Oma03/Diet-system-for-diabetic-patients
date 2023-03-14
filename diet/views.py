@@ -265,7 +265,6 @@ def update(request):
 
 
 def create(request):
-
     searchTerm = request.GET.get('search_food')
     current_time = timezone.now()
     current_day = current_time.strftime('%A')
