@@ -12,4 +12,5 @@ urlpatterns = [
     path('update/', views.update, name='update'),
     path('bmr/', views.bmr, name='bmr'),
     path('create/', views.create, name='create'),
+    path('contactus/', views.contactus, name='contactus'),
 ]

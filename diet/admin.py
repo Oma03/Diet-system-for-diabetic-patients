@@ -2,11 +2,12 @@ from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportMixin
 from .resources import FoodListResource
-from .models import Contact, DetailsN, DCalorie, FoodList, MealPlan
+from .models import Contact, DetailsN, DCalorie, FoodList, MealPlan, ContactUs
 
 
 # Register your models here.
 admin.site.register(Contact)
+admin.site.register(ContactUs)
 admin.site.register(DetailsN)
 admin.site.register(DCalorie)
 

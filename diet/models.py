@@ -20,6 +20,17 @@ class Contact(models.Model):
         return f'{self.firstname}'
 
 
+class ContactUs(models.Model):
+    lastname = models.CharField(max_length=50)
+    firstname = models.CharField(max_length=50)
+    email = models.EmailField()
+    gender = models.CharField(max_length=11)
+    feedback = models.TextField()
+
+    def __str__(self):
+        return f'{self.email}'
+
+
 class DetailsN(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     diabetes_type = models.CharField(max_length=100)

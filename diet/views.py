@@ -1,11 +1,12 @@
 from django.shortcuts import render
+from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django .contrib.auth import login, logout, authenticate
 from django .contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.http import HttpResponseRedirect
-from .models import Contact, DetailsN, DCalorie, MealPlan
+from .models import Contact, DetailsN, DCalorie, MealPlan, FoodList, ContactUs
 
 
 # Create your views here.
@@ -265,6 +266,8 @@ def update(request):
 
 
 def create(request):
+    items = FoodList.objects.all()
+    calories = DCalorie.objects.get(user=request.user)
     searchTerm = request.GET.get('search_food')
     current_time = timezone.now()
     current_day = current_time.strftime('%A')
@@ -278,4 +281,28 @@ def create(request):
         # return HttpResponseRedirect('weekly_meal_plan')
 
     return render(request, 'diet/create.html', {'searchTerm': searchTerm, 'current_time': current_time,
-                                                'current_day': current_day})
+                                                'current_day': current_day, 'calories': calories,
+                                                'items': items})
+
+
+def contactus(request):
+    if request.method == 'GET':
+        return render(request, 'diet/contactus.html')
+    else:
+        lastname = request.POST['lastname']
+        firstname = request.POST['firstname']
+        email = request.POST['email']
+        gender = request.POST['gender']
+        feedback = request.POST['feedback']
+
+        contact = ContactUs(lastname=lastname, firstname=firstname, email=email, gender=gender, feedback=feedback)
+        contact.save()
+
+        send_mail(f'New feedback from {firstname}', f'Email: {email}\n\nMessage: {feedback}',  # message
+                  email,  # from_email
+                  ['dietdoctorproject@gmail.com'],  # recipient_list
+                  fail_silently=False,
+                  )
+
+        messages.success(request, 'Feedback received')
+        return render(request, 'diet/contactus.html')

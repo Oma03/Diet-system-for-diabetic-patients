@@ -52,7 +52,7 @@
     <div class="main__container">
         <div class="main__content">
             <h1>DIET DOCTOR</h1>
-            <p>You can try us out and get your experience.</p>
+            <p>Plan your diet today, take care of your health.</p>
             <button class="main__btn"><a href="{% url 'diet:signup' %}">Get Started</a></button>
         </div>
         <div class="main__img--container">
@@ -74,7 +74,10 @@
             </div>
             <div class="footer__link--items">
                 <h2>Contact Us</h2>
-                <a href="{% url 'diet:about' %}">How It Works</a>
+                <a href="{% url 'diet:contactus' %}">Contact Us</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'diet:contactus' %}">Contact A Dietician</a>
+                {% endif %}
             </div>
         </div>
     </div>

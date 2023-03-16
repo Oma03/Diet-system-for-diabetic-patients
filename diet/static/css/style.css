@@ -227,8 +227,19 @@
     padding-bottom: 50px;
 }
 
+.form_container {
+     display: grid;
+     grid-template-columns: 1fr 1fr;
+     margin: 0 auto;
+     width: 100%;
+     max-width: 1300px;
+     padding: 0 50px;
+     padding-bottom: 50px;
+     column-gap: 50px;
+}
+
 .main__content h1 {
-    font-size: 3rem;
+    /* font-size: 3rem; */
     background-color: #ff8177;
     background-image: linear-gradient(to top, #ff844 0%, #ffb199 100%);
     background-size: 100%;
@@ -249,6 +260,13 @@
     -moz-text-fill-color: transparent;
 }
 
+.create_page {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+
 .main__content p {
     margin-top: 1rem;
     font-size: 2rem;
@@ -267,6 +285,7 @@
     transition: 0.3s;
 }
 
+
 .main__field: hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
@@ -283,7 +302,7 @@
     border: none;
     border-radius: 4px;
     color: #fff;
-    margin-top: 2rem;
+    /* margin-top: 2rem; */
     cursor: pointer;
     position: relative;
     transition: all 0.35s;
@@ -398,6 +417,7 @@
         margin: 2.5rem 0;
     }
 }
+
 
 /* Footer css */
 .footer__container {
