@@ -5,8 +5,7 @@ from django .contrib.auth import login, logout, authenticate
 from django .contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from django.http import HttpResponseRedirect
-from .models import Contact, DetailsN, DCalorie, MealPlan, FoodList, ContactUs
+from .models import Contact, DetailsN, DCalorie, MealPlan, FoodList, ContactUs, Testimonial
 
 
 # Create your views here.
@@ -78,8 +77,8 @@ def logoutaccount(request):
 @ login_required
 def details(request):
     try:
-        details_b = DetailsN.objects.get(user=request.user)
-        details_c = DCalorie.objects.get(user=request.user)
+        details_b = DetailsN.objects.filter(user=request.user).first()
+        details_c = DCalorie.objects.filter(user=request.user).first()
         saved = True
     except DetailsN.DoesNotExist:
         saved = False
@@ -174,17 +173,6 @@ def bmr(request):
 
 
 def update(request):
-    # try:
-    #     details_b = DetailsN.objects.get(user=request.user)
-    #     details_c = DCalorie.objects.get(user=request.user)
-    #     saved = True
-    # except DetailsN.DoesNotExist:
-    #     saved = False
-    #     details_b = None
-
-    # if details_b is not None:
-    #     return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
-
     if request.method == 'GET':
         return render(request, 'diet/update.html')
     else:
@@ -252,17 +240,15 @@ def update(request):
         protein_grams = round(daily_calories * (protein_percentage / 100) / 4)
         fat_grams = round(daily_calories * (fat_percentage / 100) / 9)
 
-        details_b = DetailsN.objects.filter(user=request.user)
-        details_c = DCalorie.objects.filter(user=request.user)
+        details_b = DetailsN(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
+                             gender=gender, pregnant=pregnant, activity_level=activity_level, age=age, bmr=bmr_calc,
+                             bmi=bmi, daily_calories=daily_calories)
+        details_b.save()
 
-        details_b.update(diabetes_type=diabetes_type, weight=weight, height=height,
-                         gender=gender, pregnant=pregnant, activity_level=activity_level, age=age, bmr=bmr_calc,
-                         bmi=bmi, daily_calories=daily_calories)
-        details_c.update(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams)
+        details_c = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams)
+        details_c.save()
 
-        return HttpResponseRedirect('/bmr/')
-
-    # return render(request, 'diet/bmr.html', {'details_b': details_b, 'saved': saved})
+    return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
 
 
 def create(request):
@@ -306,3 +292,32 @@ def contactus(request):
 
         messages.success(request, 'Feedback received')
         return render(request, 'diet/contactus.html')
+
+
+def contactus2(request):
+    # if request.method == 'GET':
+    #     return render(request, 'diet/contactus2.html')
+    # else:
+    #     detailss = DetailsN.objects.get(user=request.user)
+        # send_mail(f'New feedback from {username}', f'Email: {email}\n\nMessage: {feedback}',  # message
+        #           email,  # from_email
+        #           ['dietdoctorproject@gmail.com'],  # recipient_list
+        #           fail_silently=False,
+        #           )
+
+        # messages.success(request, 'Feedback received')
+    return render(request, 'diet/contactus2.html')
+
+
+def testimony(request):
+    if request.method == 'GET':
+        return render(request, 'diet/testimonial.html')
+    else:
+        email = request.POST['email']
+        feedback = request.POST['feedback']
+
+        testimony_u = Testimonial(user=request.user, email=email, feedback=feedback)
+        testimony_u.save()
+
+        messages.success(request, 'Feedback received, Thank you!!!')
+        return render(request, 'diet/testimonial.html')
