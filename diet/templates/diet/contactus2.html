@@ -64,10 +64,14 @@
                 {% csrf_token %}
                 <input type="text" class="main__field" value="{{ user.username }}" name="username">
                 <input type="email" class="main__field" placeholder="Email" name="email">
+
                 <select class="main__field" name="dr">
                     <option disabled selected >Select Dietician of Choice</option>
-                    <option >DR name: dremail@example.com</option>
+                    {% for doctor in doctors %}
+                    <option >DR {{doctor.lastname}}: {{doctor.email}}m</option>
+                    {% endfor %}
                 </select>
+
                 <textarea rows="5" placeholder="Feedback" class="main__field" name="feedback"></textarea>
                 <button type="submit" class="main__btn"><span>Submit</span></button>
             </form>

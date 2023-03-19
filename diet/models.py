@@ -144,3 +144,12 @@ class MealPlan(models.Model):
 
     def __str__(self):
         return self.day
+
+
+class Doctors(models.Model):
+    lastname = models.CharField(max_length=100)
+    firstname = models.CharField(max_length=100)
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.email

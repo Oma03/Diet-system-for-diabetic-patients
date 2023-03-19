@@ -5,7 +5,7 @@ from django .contrib.auth import login, logout, authenticate
 from django .contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from .models import Contact, DetailsN, DCalorie, MealPlan, FoodList, ContactUs, Testimonial
+from .models import Contact, DetailsN, DCalorie, MealPlan, FoodList, ContactUs, Testimonial, Doctors
 
 
 # Create your views here.
@@ -295,6 +295,7 @@ def contactus(request):
 
 
 def contactus2(request):
+    doctors = Doctors.objects.all()
     # if request.method == 'GET':
     #     return render(request, 'diet/contactus2.html')
     # else:
@@ -306,7 +307,7 @@ def contactus2(request):
         #           )
 
         # messages.success(request, 'Feedback received')
-    return render(request, 'diet/contactus2.html')
+    return render(request, 'diet/contactus2.html', {'doctors':doctors})
 
 
 def testimony(request):
