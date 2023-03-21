@@ -12,11 +12,13 @@ from .models import Contact, DetailsN, DCalorie, MealPlan, FoodList, ContactUs, 
 
 
 def home(request):
-    return render(request, 'diet/index.html')
+    items = Testimonial.objects.all()
+    return render(request, 'diet/index.html', {'items': items})
 
 
 def about(request):
-    return render(request, 'diet/about.html')
+    items = Testimonial.objects.all()
+    return render(request, 'diet/about.html', {'items': items})
 
 
 def signup(request):
@@ -76,6 +78,7 @@ def logoutaccount(request):
 
 @ login_required
 def details(request):
+    items = Testimonial.objects.all()
     try:
         details_b = DetailsN.objects.filter(user=request.user).first()
         details_c = DCalorie.objects.filter(user=request.user).first()
@@ -153,6 +156,9 @@ def details(request):
         carb_grams = round(daily_calories * (carb_percentage / 100) / 4)
         protein_grams = round(daily_calories * (protein_percentage / 100) / 4)
         fat_grams = round(daily_calories * (fat_percentage / 100) / 9)
+        meal_carb_gram = round(carb_grams/4)
+        meal_protein_gram = round(protein_grams/4)
+        meal_fat_gram = round(fat_grams/4)
 
         if not saved:
             details_b = DetailsN(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
@@ -161,15 +167,17 @@ def details(request):
             details_b.save()
             saved = True
 
-        calorie = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams)
+        calorie = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams,
+                           meal_carb_gram=meal_carb_gram, meal_protein_gram=meal_protein_gram,
+                           meal_fat_gram=meal_fat_gram)
         calorie.save()
 
-    return render(request, 'diet/details.html', {'details_b': details_b, 'saved': saved})
+    return render(request, 'diet/details.html', {'details_b': details_b, 'saved': saved, 'items': items})
 
 
 def bmr(request):
-
-    return render(request, 'diet/bmr.html')
+    items = Testimonial.objects.all()
+    return render(request, 'diet/bmr.html', {'items': items})
 
 
 def update(request):
@@ -252,23 +260,24 @@ def update(request):
 
 
 def create(request):
+    itemss = Testimonial.objects.all()
     items = FoodList.objects.all()
     calories = DCalorie.objects.get(user=request.user)
     searchTerm = request.GET.get('search_food')
     current_time = timezone.now()
     current_day = current_time.strftime('%A')
-    if request.method == 'POST':
-        meal_plan = MealPlan(user=request.user, day=current_day,
-                             breakfast=request.POST['breakfast'],
-                             lunch=request.POST['lunch'],
-                             snack=request.POST['snack'],
-                             dinner=request.POST['dinner'])
-        meal_plan.save()
-        # return HttpResponseRedirect('weekly_meal_plan')
+    # if request.method == 'POST':
+    #     meal_plan = MealPlan(user=request.user, day=current_day,
+    #                          breakfast=request.POST['breakfast'],
+    #                          lunch=request.POST['lunch'],
+    #                          snack=request.POST['snack'],
+    #                          dinner=request.POST['dinner'])
+    #     meal_plan.save()
+    #     # return HttpResponseRedirect('weekly_meal_plan')
 
     return render(request, 'diet/create.html', {'searchTerm': searchTerm, 'current_time': current_time,
                                                 'current_day': current_day, 'calories': calories,
-                                                'items': items})
+                                                'items': items, 'itemss': itemss})
 
 
 def contactus(request):
@@ -307,10 +316,11 @@ def contactus2(request):
         #           )
 
         # messages.success(request, 'Feedback received')
-    return render(request, 'diet/contactus2.html', {'doctors':doctors})
+    return render(request, 'diet/contactus2.html', {'doctors': doctors})
 
 
 def testimony(request):
+    items = Testimonial.objects.all()
     if request.method == 'GET':
         return render(request, 'diet/testimonial.html')
     else:
@@ -321,4 +331,25 @@ def testimony(request):
         testimony_u.save()
 
         messages.success(request, 'Feedback received, Thank you!!!')
-        return render(request, 'diet/testimonial.html')
+        return render(request, 'diet/testimonial.html', {'items': items})
+
+
+def breakfast(request):
+    global results
+    results = []
+    items = FoodList.objects.all()
+    calories = DCalorie.objects.get(user=request.user)
+    searchTerm = request.GET.get('search_food')
+    current_time = timezone.now()
+    current_day = current_time.strftime('%A')
+    if request.method == "Get":
+        query = request.Get.get('search_food')
+        if query:
+            results = items.objects.filter(ame__icontains=query)
+        else:
+            results = []
+    # else:
+    #     meal_plan = MealPlan(user=request.user, day=current_day, breakfast=request.POST['breakfast'])
+    return render(request, 'diet/breakfast.html', {'searchTerm': searchTerm, 'current_time': current_time,
+                                                   'current_day': current_day, 'calories': calories,
+                                                   'items': items, 'results': results})

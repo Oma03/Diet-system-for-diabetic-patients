@@ -70,35 +70,74 @@
       </div>
       <div class="form_container">
           <div class="section1">
-              <h1 class="create_page">Meal Plan for {{current_day}}</h1>
-                <li class="navbar__item">
-                <a href="{% url 'diet:breakfast' %}" class="navbar__links">Breakfast</a>
-                </li>
-                <li class="navbar__item">
-                <a href="{% url 'diet:breakfast' %}" class="navbar__links">Breakfast</a>
-                </li>
-                <li class="navbar__item">
-                <a href="{% url 'diet:breakfast' %}" class="navbar__links">Breakfast</a>
-                </li>
-               <li class="navbar__item">
-                <a href="{% url 'diet:breakfast' %}" class="navbar__links">Breakfast</a>
-                </li>
-          </div>
-          <div class="section2">
               <h1 class="create_page">Daily Calorie for {{current_day}}</h1>
                 <form method="POST" class="main__form">
                     {% csrf_token %}
-                    <input type="text" name="carbohydrate" value="Carbohydrate intake: {{ calories.carb_grams }}g/day"
+                    <input type="text" name="carbohydrate" value="Carbohydrate intake: {{ calories.meal_carb_gram }}g/meal"
                            class="main__field">
                     <br>
-                    <input type="text" name="protein" value="Protein intake: {{ calories.protein_grams }}g/day"
+                    <input type="text" name="protein" value="Protein intake: {{ calories.meal_protein_gram }}g/meal"
                            class="main__field">
                     <br>
-                    <input type="text" name="fat" value="Fat intake: {{ calories.fat_grams }}g/day" class="main__field">
+                    <input type="text" name="fat" value="Fat intake: {{ calories.meal_fat_gram }}g/meal" class="main__field">
                     <br>
                 </form>
           </div>
+          <div class="section2">
+              <h1 class="create_page">Meal Plan for {{current_day}}</h1>
+                <form method="POST" class="main__form">
+                    {% csrf_token %}
+                    <input type="text" name="breakfast" placeholder="Breakfast" class="main__field">
+                    <br>
+                     <button type="submit" class="main__btn"><span>Save</span></button>
+                </form>
+          </div>
       </div>
+        <h1 class="create_page">Meals</h1>
+      <div class="main__container">
+            <div class="main__content">
+                <form method="get" action="{% url 'diet:breakfast' %}">
+                    <input type="text" name="search_food" placeholder="Search" class="main__field">
+                    <button class="main__btn"><span>Search</span></button>
+                </form>
+            </div>
+      </div>
+      <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% if results %}
+                {% for item in results %}
+                    <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                        <h4 class="d-block w-100">Category: {{ item.Category }}</h4>
+                        <h4 class="d-block w-100">{{ item.SearchName }}</h4>
+                        <h5 class="d-block w-100">Carbohydrate content: {{ item.CHOCDF_g }}</h5>
+                        <h5 class="d-block w-100">Protein content: {{ item.PROTCNT_g }}</h5>
+                        <h5 class="d-block w-100">Fat content: {{ item.FATCE_g }}</h5>
+                        <button type="submit" class="main__btn"><span>Select</span></button>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% for item in items %}
+                    <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                        <h4 class="d-block w-100">Category: {{ item.Category }}</h4>
+                        <h4 class="d-block w-100">{{ item.SearchName }}</h4>
+                        <h5 class="d-block w-100">Carbohydrate content: {{ item.CHOCDF_g }}</h5>
+                        <h5 class="d-block w-100">Protein content: {{ item.PROTCNT_g }}</h5>
+                        <h5 class="d-block w-100">Fat content: {{ item.FATCE_g }}</h5>
+                        <button type="submit" class="main__btn"><span>Select</span></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+        <br>
     </div>
 <!--Footer Section-->
     <div class="footer__container">
