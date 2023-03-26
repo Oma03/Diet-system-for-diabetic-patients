@@ -79,16 +79,17 @@ def logoutaccount(request):
 @ login_required
 def details(request):
     items = Testimonial.objects.all()
-    try:
-        details_b = DetailsN.objects.filter(user=request.user).first()
-        details_c = DCalorie.objects.filter(user=request.user).first()
-        saved = True
-    except DetailsN.DoesNotExist:
-        saved = False
-        details_b = None
-
-    if details_b is not None:
-        return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
+    # try:
+    #     details_b = DetailsN.objects.filter(user=request.user).first()
+    #     details_c = DCalorie.objects.filter(user=request.user).first()
+    #     saved = True
+    # except DetailsN.DoesNotExist:
+    #     saved = False
+    #     details_b = None
+    #
+    # if details_b is not None:
+    #     return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
+    # else:
 
     if request.method == 'GET':
         return render(request, 'diet/details.html')
@@ -160,17 +161,19 @@ def details(request):
         meal_protein_gram = round(protein_grams/4)
         meal_fat_gram = round(fat_grams/4)
 
-        if not saved:
-            details_b = DetailsN(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
-                                 gender=gender, pregnant=pregnant, activity_level=activity_level, age=age, bmr=bmr_calc,
-                                 bmi=bmi, daily_calories=daily_calories)
-            details_b.save()
-            saved = True
+        details_b = DetailsN(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
+                             gender=gender, pregnant=pregnant, activity_level=activity_level, age=age,
+                             bmr=bmr_calc, bmi=bmi, daily_calories=daily_calories)
+        details_b.save()
+        saved = True
 
-        calorie = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams,
-                           meal_carb_gram=meal_carb_gram, meal_protein_gram=meal_protein_gram,
-                           meal_fat_gram=meal_fat_gram)
-        calorie.save()
+        details_c = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams,
+                             fat_grams=fat_grams, meal_carb_gram=meal_carb_gram, meal_protein_gram=meal_protein_gram,
+                             meal_fat_gram=meal_fat_gram)
+        details_c.save()
+
+        # if details_b is saved:
+        #     return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
 
     return render(request, 'diet/details.html', {'details_b': details_b, 'saved': saved, 'items': items})
 
@@ -247,13 +250,21 @@ def update(request):
         carb_grams = round(daily_calories * (carb_percentage / 100) / 4)
         protein_grams = round(daily_calories * (protein_percentage / 100) / 4)
         fat_grams = round(daily_calories * (fat_percentage / 100) / 9)
+        meal_carb_gram = round(carb_grams / 4)
+        meal_protein_gram = round(protein_grams / 4)
+        meal_fat_gram = round(fat_grams / 4)
 
-        details_b = DetailsN(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
-                             gender=gender, pregnant=pregnant, activity_level=activity_level, age=age, bmr=bmr_calc,
-                             bmi=bmi, daily_calories=daily_calories)
+        details_b = DetailsN.objects.filter(user=request.user).first()
+        details_c = DCalorie.objects.filter(user=request.user).first()
+
+        details_b.update(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
+                         gender=gender, pregnant=pregnant, activity_level=activity_level, age=age, bmr=bmr_calc,
+                         bmi=bmi, daily_calories=daily_calories)
         details_b.save()
 
-        details_c = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams)
+        details_c.update(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams,
+                         meal_carb_gram=meal_carb_gram, meal_protein_gram=meal_protein_gram,
+                         meal_fat_gram=meal_fat_gram)
         details_c.save()
 
     return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
@@ -335,21 +346,18 @@ def testimony(request):
 
 
 def breakfast(request):
-    global results
-    results = []
+    # items_search = FoodList.objects.filter('SearchName').first()
     items = FoodList.objects.all()
     calories = DCalorie.objects.get(user=request.user)
-    searchTerm = request.GET.get('search_food')
     current_time = timezone.now()
     current_day = current_time.strftime('%A')
-    if request.method == "Get":
-        query = request.Get.get('search_food')
-        if query:
-            results = items.objects.filter(ame__icontains=query)
-        else:
-            results = []
+    query = request.GET.get('search_food')
+    if query:
+        results = FoodList.objects.filter(SearchName__icontains=query).first()
+    else:
+        results = []
+        messages.error(request, 'No items found')
     # else:
     #     meal_plan = MealPlan(user=request.user, day=current_day, breakfast=request.POST['breakfast'])
-    return render(request, 'diet/breakfast.html', {'searchTerm': searchTerm, 'current_time': current_time,
-                                                   'current_day': current_day, 'calories': calories,
-                                                   'items': items, 'results': results})
+    return render(request, 'diet/breakfast.html', {'current_time': current_time, 'current_day': current_day,
+                                                   'calories': calories, 'items': items, 'results': results})
