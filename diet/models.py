@@ -20,6 +20,26 @@ class Contact(models.Model):
         return f'{self.firstname}'
 
 
+class ContactUs(models.Model):
+    lastname = models.CharField(max_length=50)
+    firstname = models.CharField(max_length=50)
+    email = models.EmailField()
+    gender = models.CharField(max_length=11)
+    feedback = models.TextField()
+
+    def __str__(self):
+        return f'{self.email}'
+
+
+class Testimonial(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    email = models.EmailField()
+    feedback = models.TextField()
+
+    def __str__(self):
+        return f'{self.email}'
+
+
 class DetailsN(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     diabetes_type = models.CharField(max_length=100)
@@ -42,6 +62,9 @@ class DCalorie(models.Model):
     carb_grams = models.CharField(max_length=100)
     protein_grams = models.CharField(max_length=100)
     fat_grams = models.CharField(max_length=100)
+    meal_carb_gram = models.CharField(max_length=100, null=True)
+    meal_protein_gram = models.CharField(max_length=100, null=True)
+    meal_fat_gram = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return self.user.username
@@ -100,10 +123,22 @@ class MealPlan(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     week_id = models.IntegerField(unique=True)
     day = models.CharField(max_length=10, default=timezone.now().strftime('%A'), choices=DAY_CHOICES)
-    breakfast = models.CharField(max_length=100)
-    lunch = models.CharField(max_length=100)
-    snack = models.CharField(max_length=100)
-    dinner = models.CharField(max_length=100)
+    breakfast = models.CharField(max_length=100, null=True)
+    lunch = models.CharField(max_length=100, null=True)
+    snack = models.CharField(max_length=100, null=True)
+    dinner = models.CharField(max_length=100, null=True)
+    breakfast_carb_gram = models.CharField(max_length=100, null=True)
+    breakfast_protein_gram = models.CharField(max_length=100, null=True)
+    breakfast_fat_gram = models.CharField(max_length=100, null=True)
+    lunch_carb_gram = models.CharField(max_length=100, null=True)
+    lunch_protein_gram = models.CharField(max_length=100, null=True)
+    lunch_fat_gram = models.CharField(max_length=100, null=True)
+    snack_carb_gram = models.CharField(max_length=100, null=True)
+    snack_protein_gram = models.CharField(max_length=100, null=True)
+    snack_fat_gram = models.CharField(max_length=100, null=True)
+    dinner_carb_gram = models.CharField(max_length=100, null=True)
+    dinner_protein_gram = models.CharField(max_length=100, null=True)
+    dinner_fat_gram = models.CharField(max_length=100, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def generate_week_id(self):
@@ -124,3 +159,13 @@ class MealPlan(models.Model):
 
     def __str__(self):
         return self.day
+
+
+class Doctors(models.Model):
+    lastname = models.CharField(max_length=100)
+    firstname = models.CharField(max_length=100)
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.email
+

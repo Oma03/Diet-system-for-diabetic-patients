@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0"/>
+    <title>DIET DOCTOR</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+    <style>
+        .carousel-item h4,
+        .carousel-item h5 {
+          color: white;
+        }
+
+        /* Reduce width of carousel */
+        .carousel-inner {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<!--navbar section-->
+<nav class="navbar">
+    <div class="navbar__container">
+        <a href="/" id="navbar__logo">DIETD</a>
+        <div class="navbar__toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="navbar__menu">
+            <li class="navbar__item">
+                <a href="{% url 'diet:home' %}" class="navbar__links">Home</a>
+            </li>
+            <li class="navbar__item">
+                <a href="{% url 'diet:about' %}" class="navbar__links">About</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="navbar__item">
+                    <a class="navbar__links" href="{% url 'diet:details' %}">
+                    Details
+                    </a>
+                </li>
+                <li class="navbar__item">
+                    <a class="navbar__links" href="{% url 'diet:logoutaccount' %}">
+                    Logout ({{ user.username }})
+                    </a>
+                </li>
+            {% else %}
+                <li class="navbar__item">
+                    <a href="{% url 'diet:signup' %}" class="navbar__links">Sign Up</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="{% url 'diet:loginaccount' %}" class="navbar__links">Log In</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<!--Hero Section-->
+<div class="main">
+    <div class="main__container">
+        <div class="main__content">
+            <h2>RESULT FEEDBACK</h2>
+             {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <form class="main__form" method="post">
+                {% csrf_token %}
+                <input type="text" class="main__field" value="{{ user.username }}" name="username">
+                <input type="email" class="main__field" placeholder="Email" name="email">
+                <textarea rows="5" placeholder="What has been your results so far"
+                          class="main__field" name="feedback"></textarea>
+                <button type="submit" class="main__btn"><span>Submit</span></button>
+            </form>
+        </div>
+    </div>
+</div>
+<!--Footer Section-->
+<div class="footer__container">
+    <div class="footer__links">
+        <div class="footer__link--wrapper">
+            <div class="footer__link--items">
+                <h2>About Us</h2>
+                <a href="{% url 'diet:about' %}">How It Works</a>
+            </div>
+            <div class="footer__link--items">
+                <h2>Testimonials</h2>
+                <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for item in items %}
+                            <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                                <h4 class="d-block w-100">{{ item.user }}</h4>
+                                <h5 class="d-block w-100">{{ item.feedback }}</h5>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                {% if user.is_authenticated %}
+                <a href="{% url 'diet:testimony' %}">Give your feedback</a>
+                {% endif %}
+            </div>
+            <div class="footer__link--items">
+                <h2>Contact Us</h2>
+                <a href="{% url 'diet:contactus' %}">Contact Us</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'diet:contactus2' %}">Contact A Dietician</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
