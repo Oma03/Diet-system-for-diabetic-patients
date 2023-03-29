@@ -62,13 +62,13 @@
             {% endif %}
             <form class="main__form" method="post">
                 {% csrf_token %}
-                <input type="text" class="main__field" value="{{ user.username }}" name="username">
-                <input type="email" class="main__field" placeholder="Email" name="email">
+                <input type="text" readonly class="main__field" value="{{ user.username }}" name="username">
+                <input type="email" readonly class="main__field" placeholder="Email" name="email" value="{{user.email}}">
 
                 <select class="main__field" name="dr">
                     <option disabled selected >Select Dietician of Choice</option>
                     {% for doctor in doctors %}
-                    <option >DR {{doctor.lastname}}: {{doctor.email}}m</option>
+                        <option >DR {{doctor.lastname}}: {{doctor.email}}m</option>
                     {% endfor %}
                 </select>
 

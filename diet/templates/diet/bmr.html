@@ -68,16 +68,16 @@
             <h2>DETAILS </h2>
             <form class="main__form">
                 <h2>{{ user.username }}</h2>
-                <input type="text" id="bmi" name="bmi" value="BMI: {{ details_b.bmi }} Kg/m" class="main__field">
-                <input type="text" id="bmr" name="bmr" value="BMR: {{ details_b.bmr }} Kcal/day" class="main__field">
-                <input type="text" id="daily-calories" name="daily_calories"
+                <input readonly  type="text" id="bmi" name="bmi" value="BMI: {{ details_b.bmi }} Kg/m" class="main__field">
+                <input readonly type="text" id="bmr" name="bmr" value="BMR: {{ details_b.bmr }} Kcal/day" class="main__field">
+                <input readonly type="text" id="daily-calories" name="daily_calories"
                        value="Daily Calorie needs: {{ details_b.daily_calories }} Kcal/day" class="main__field">
-                <input type="text" id="age" name="age" value="Age: {{ details_b.age }}" class="main__field">
-                <input type="text" id="carb_grams" name="carb_grams"
+                <input readonly type="text" id="age" name="age" value="Age: {{ details_b.age }}" class="main__field">
+                <input readonly type="text" id="carb_grams" name="carb_grams"
                        value="Carb Gram: {{ details_c.carb_grams }} /day" class="main__field">
-                <input type="text" id="protein_grams" name="protein_grams"
+                <input readonly type="text" id="protein_grams" name="protein_grams"
                        value="Protein Gram {{ details_c.protein_grams }} /day" class="main__field">
-                <input type="text" id="fat_grams" name="fat_grams"
+                <input readonly type="text" id="fat_grams" name="fat_grams"
                        value="Fat Gram: {{ details_c.fat_grams }} /day" class="main__field">
                 <button class="main__btn"><a href="{% url 'diet:update' %}">Update</a></button>
                 <button class="main__btn"><a href="{% url 'diet:create' %}">Create diet</a></button>

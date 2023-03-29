@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django .contrib.auth import login, logout, authenticate
@@ -79,17 +79,16 @@ def logoutaccount(request):
 @ login_required
 def details(request):
     items = Testimonial.objects.all()
-    # try:
-    #     details_b = DetailsN.objects.filter(user=request.user).first()
-    #     details_c = DCalorie.objects.filter(user=request.user).first()
-    #     saved = True
-    # except DetailsN.DoesNotExist:
-    #     saved = False
-    #     details_b = None
-    #
-    # if details_b is not None:
-    #     return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
-    # else:
+    try:
+        details_b = DetailsN.objects.filter(user=request.user).first()
+        details_c = DCalorie.objects.filter(user=request.user).first()
+        saved = True
+    except DetailsN.DoesNotExist:
+        saved = False
+        details_b = None
+    
+    if details_b is not None:
+        return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
 
     if request.method == 'GET':
         return render(request, 'diet/details.html')
@@ -164,16 +163,22 @@ def details(request):
         details_b = DetailsN(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
                              gender=gender, pregnant=pregnant, activity_level=activity_level, age=age,
                              bmr=bmr_calc, bmi=bmi, daily_calories=daily_calories)
-        details_b.save()
-        saved = True
+   
 
         details_c = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams,
                              fat_grams=fat_grams, meal_carb_gram=meal_carb_gram, meal_protein_gram=meal_protein_gram,
                              meal_fat_gram=meal_fat_gram)
-        details_c.save()
+       
+        try : 
+            
+            details_b.save()
+            details_c.save()
+            saved = True
+        except : 
+            saved = False
 
-        # if details_b is saved:
-        #     return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
+        if saved:
+            return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
 
     return render(request, 'diet/details.html', {'details_b': details_b, 'saved': saved, 'items': items})
 
@@ -254,18 +259,32 @@ def update(request):
         meal_protein_gram = round(protein_grams / 4)
         meal_fat_gram = round(fat_grams / 4)
 
-        details_b = DetailsN.objects.filter(user=request.user).first()
-        details_c = DCalorie.objects.filter(user=request.user).first()
+        details_b = DetailsN.objects.filter(user=request.user)
+        details_c = DCalorie.objects.filter(user=request.user)
 
         details_b.update(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
                          gender=gender, pregnant=pregnant, activity_level=activity_level, age=age, bmr=bmr_calc,
                          bmi=bmi, daily_calories=daily_calories)
-        details_b.save()
 
         details_c.update(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams, fat_grams=fat_grams,
                          meal_carb_gram=meal_carb_gram, meal_protein_gram=meal_protein_gram,
                          meal_fat_gram=meal_fat_gram)
-        details_c.save()
+
+
+        try : 
+            for detail_b in details_b : 
+                detail_b.save()
+            
+            for detail_c in details_c:
+                detail_c.save()
+            saved = True
+
+        except : 
+            saved = False
+
+        if saved:
+            return redirect('diet:details')
+
 
     return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
 
@@ -316,17 +335,29 @@ def contactus(request):
 
 def contactus2(request):
     doctors = Doctors.objects.all()
-    # if request.method == 'GET':
-    #     return render(request, 'diet/contactus2.html')
-    # else:
-    #     detailss = DetailsN.objects.get(user=request.user)
-        # send_mail(f'New feedback from {username}', f'Email: {email}\n\nMessage: {feedback}',  # message
-        #           email,  # from_email
-        #           ['dietdoctorproject@gmail.com'],  # recipient_list
-        #           fail_silently=False,
-        #           )
 
-        # messages.success(request, 'Feedback received')
+    if request.method == 'GET':
+        return render(request, 'diet/contactus2.html', {'doctors': doctors})
+    else:
+        detailss = DetailsN.objects.get(user=request.user)
+        username = request.POST['username']
+        email = request.POST['email']
+        feedback = request.POST['feedback']
+
+        try : 
+
+            send_mail(f'New feedback from {username}', f'Email: {email}\n\nMessage: {feedback}',  # message
+                    email,  # from_email
+                    ['ogunmetimilehin@gmail.com'],  # recipient_list
+                    fail_silently=False,
+                    )
+            print('success')
+            
+            messages.success(request, 'Feedback received')
+        except Exception as e  : 
+            print(e)
+            
+            messages.error(request, 'Something went wrong')
     return render(request, 'diet/contactus2.html', {'doctors': doctors})
 
 
