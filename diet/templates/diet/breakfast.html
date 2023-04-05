@@ -74,12 +74,13 @@
                 <form method="POST" class="main__form">
                     {% csrf_token %}
                     <input type="text" name="carbohydrate" value="Carbohydrate intake: {{ calories.meal_carb_gram }}g/meal"
-                           class="main__field">
+                           readonly class="main__field">
                     <br>
                     <input type="text" name="protein" value="Protein intake: {{ calories.meal_protein_gram }}g/meal"
-                           class="main__field">
+                           readonly class="main__field">
                     <br>
-                    <input type="text" name="fat" value="Fat intake: {{ calories.meal_fat_gram }}g/meal" class="main__field">
+                    <input type="text" name="fat" value="Fat intake: {{ calories.meal_fat_gram }}g/meal"
+                           readonly class="main__field">
                     <br>
                 </form>
           </div>

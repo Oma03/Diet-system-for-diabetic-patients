@@ -41,7 +41,7 @@
 <div class="main">
     <div class="main__container-login">
         <div class="main__content">
-            <h2>LOG IN</h2>
+            <h2>Recover Password</h2>
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}">
@@ -51,12 +51,10 @@
             {% endif %}
             <form class="main__form" method="post">
                 {% csrf_token %}
-                <input type="text" class="main__field" placeholder="Username" name="username">
-                <input type="password" class="main__field" placeholder="Password" name="pass2">
-                <li class="navbar__item">
-                 <a href="{% url 'diet:forgot' %}" class="navbar__links">Forgot Password</a>
-                </li>
-                <button type="submit" class="main__btn"><span>Log In</span></button>
+                <input type="text" class="main__field" placeholder="Email" name="email">
+                <input type="password" class="main__field" placeholder="Password" name="pass1">
+                <input type="password" class="main__field" placeholder="Password Again" name="pass2">
+                <button type="submit" class="main__btn"><span>Submit</span></button>
             </form>
         </div>
         <div class="main__img--container">

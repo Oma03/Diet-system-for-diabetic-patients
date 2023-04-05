@@ -71,6 +71,28 @@ def loginaccount(request):
             return render(request, 'diet/index.html')
 
 
+def forgot(request):
+    if request.method == 'GET':
+        return render(request, 'diet/forgot.html')
+    else:
+        email = request.POST.get('email')
+        pass1 = request.POST.get('pass1')
+        pass2 = request.POST.get('pass2')
+        try:
+            User.objects.get(email=email)
+            if pass1 == pass2:
+                user = User.objects.update_user(password=pass2)
+                user.save()
+                messages.success(request, 'Password successfully changed')
+                return render(request, 'diet/index.html')
+            else:
+                messages.error(request, 'Passwords do not match')
+                return render(request, 'diet/forgot.html')
+        except:
+            messages.error(request, 'Invalid email')
+            return render(request, 'diet/forgot.html')
+
+
 def logoutaccount(request):
     logout(request)
     return render(request, 'diet/loginaccount.html')
@@ -82,12 +104,12 @@ def details(request):
     try:
         details_b = DetailsN.objects.filter(user=request.user).first()
         details_c = DCalorie.objects.filter(user=request.user).first()
-        saved = True
-    except DetailsN.DoesNotExist:
-        saved = False
+
+    except DetailsN.DoesNotExist and DCalorie.DoesNotExist:
         details_b = None
+        details_c = None
     
-    if details_b is not None:
+    if details_b and details_c is not None:
         return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
 
     if request.method == 'GET':
@@ -163,18 +185,17 @@ def details(request):
         details_b = DetailsN(user=request.user, diabetes_type=diabetes_type, weight=weight, height=height,
                              gender=gender, pregnant=pregnant, activity_level=activity_level, age=age,
                              bmr=bmr_calc, bmi=bmi, daily_calories=daily_calories)
-   
 
         details_c = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams,
                              fat_grams=fat_grams, meal_carb_gram=meal_carb_gram, meal_protein_gram=meal_protein_gram,
                              meal_fat_gram=meal_fat_gram)
        
-        try : 
-            
+        try:
             details_b.save()
             details_c.save()
             saved = True
-        except : 
+
+        except:
             saved = False
 
         if saved:
@@ -270,21 +291,19 @@ def update(request):
                          meal_carb_gram=meal_carb_gram, meal_protein_gram=meal_protein_gram,
                          meal_fat_gram=meal_fat_gram)
 
-
-        try : 
-            for detail_b in details_b : 
+        try:
+            for detail_b in details_b:
                 detail_b.save()
             
             for detail_c in details_c:
                 detail_c.save()
             saved = True
 
-        except : 
+        except:
             saved = False
 
         if saved:
             return redirect('diet:details')
-
 
     return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
 
@@ -344,21 +363,20 @@ def contactus2(request):
         email = request.POST['email']
         feedback = request.POST['feedback']
 
-        try : 
-
+        try:
             send_mail(f'New feedback from {username}', f'Email: {email}\n\nMessage: {feedback}',  # message
-                    email,  # from_email
-                    ['ogunmetimilehin@gmail.com'],  # recipient_list
-                    fail_silently=False,
-                    )
+                      email,  # from_email
+                      ['ogunmetimilehin@gmail.com'],  # recipient_list
+                      fail_silently=False,
+                      )
             print('success')
             
             messages.success(request, 'Feedback received')
-        except Exception as e  : 
+        except Exception as e:
             print(e)
             
             messages.error(request, 'Something went wrong')
-    return render(request, 'diet/contactus2.html', {'doctors': doctors})
+    return render(request, 'diet/contactus2.html', {'doctors': doctors, 'detailss': detailss})
 
 
 def testimony(request):

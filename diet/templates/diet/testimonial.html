@@ -74,8 +74,8 @@
             {% endif %}
             <form class="main__form" method="post">
                 {% csrf_token %}
-                <input type="text" class="main__field" value="{{ user.username }}" name="username">
-                <input type="email" class="main__field" placeholder="Email" name="email">
+                <input type="text" readonly class="main__field" value="{{ user.username }}" name="username">
+                <input type="email" readonly class="main__field" value="{{user.email}}" name="email">
                 <textarea rows="5" placeholder="What has been your results so far"
                           class="main__field" name="feedback"></textarea>
                 <button type="submit" class="main__btn"><span>Submit</span></button>

@@ -63,7 +63,7 @@
             <form class="main__form" method="post">
                 {% csrf_token %}
                 <input type="text" readonly class="main__field" value="{{ user.username }}" name="username">
-                <input type="email" readonly class="main__field" placeholder="Email" name="email" value="{{user.email}}">
+                <input type="email" readonly class="main__field" name="email" value="{{user.email}}">
 
                 <select class="main__field" name="dr">
                     <option disabled selected >Select Dietician of Choice</option>
