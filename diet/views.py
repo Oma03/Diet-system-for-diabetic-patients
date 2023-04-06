@@ -108,7 +108,7 @@ def details(request):
     except DetailsN.DoesNotExist and DCalorie.DoesNotExist:
         details_b = None
         details_c = None
-    
+
     if details_b and details_c is not None:
         return render(request, 'diet/bmr.html', {'details_b': details_b, 'details_c': details_c})
 
@@ -138,9 +138,11 @@ def details(request):
 
         # Calculate the user's BMR based on their gender, weight, height, and age
         if gender == 'Female'.casefold():
-            bmr_calc = round(447.6 + (9.2 * int(weight)) + (3.1 * int(height)) - (4.3 * int(age)))
+            bmr_calc = round(447.6 + (9.2 * int(weight)) +
+                             (3.1 * int(height)) - (4.3 * int(age)))
         else:
-            bmr_calc = round(88.36 + (13.4 * int(weight)) + (4.8 * int(height)) - (5.7 * int(age)))
+            bmr_calc = round(88.36 + (13.4 * int(weight)) +
+                             (4.8 * int(height)) - (5.7 * int(age)))
 
         # Adjust the BMR based on the user's activity level
         if activity_level == 'Sedentary (little or no exercise)'.casefold():
@@ -189,7 +191,7 @@ def details(request):
         details_c = DCalorie(user=request.user, carb_grams=carb_grams, protein_grams=protein_grams,
                              fat_grams=fat_grams, meal_carb_gram=meal_carb_gram, meal_protein_gram=meal_protein_gram,
                              meal_fat_gram=meal_fat_gram)
-       
+
         try:
             details_b.save()
             details_c.save()
@@ -236,9 +238,11 @@ def update(request):
 
         # Calculate the user's BMR based on their gender, weight, height, and age
         if gender == 'Female'.casefold():
-            bmr_calc = round(447.6 + (9.2 * int(weight)) + (3.1 * int(height)) - (4.3 * int(age)))
+            bmr_calc = round(447.6 + (9.2 * int(weight)) +
+                             (3.1 * int(height)) - (4.3 * int(age)))
         else:
-            bmr_calc = round(88.36 + (13.4 * int(weight)) + (4.8 * int(height)) - (5.7 * int(age)))
+            bmr_calc = round(88.36 + (13.4 * int(weight)) +
+                             (4.8 * int(height)) - (5.7 * int(age)))
 
         # Adjust the BMR based on the user's activity level
         if activity_level == 'Sedentary (little or no exercise)'.casefold():
@@ -294,7 +298,7 @@ def update(request):
         try:
             for detail_b in details_b:
                 detail_b.save()
-            
+
             for detail_c in details_c:
                 detail_c.save()
             saved = True
@@ -339,7 +343,8 @@ def contactus(request):
         gender = request.POST['gender']
         feedback = request.POST['feedback']
 
-        contact = ContactUs(lastname=lastname, firstname=firstname, email=email, gender=gender, feedback=feedback)
+        contact = ContactUs(lastname=lastname, firstname=firstname,
+                            email=email, gender=gender, feedback=feedback)
         contact.save()
 
         send_mail(f'New feedback from {firstname}', f'Email: {email}\n\nMessage: {feedback}',  # message
@@ -370,11 +375,11 @@ def contactus2(request):
                       fail_silently=False,
                       )
             print('success')
-            
+
             messages.success(request, 'Feedback received')
         except Exception as e:
             print(e)
-            
+
             messages.error(request, 'Something went wrong')
     return render(request, 'diet/contactus2.html', {'doctors': doctors, 'detailss': detailss})
 
@@ -387,7 +392,8 @@ def testimony(request):
         email = request.POST['email']
         feedback = request.POST['feedback']
 
-        testimony_u = Testimonial(user=request.user, email=email, feedback=feedback)
+        testimony_u = Testimonial(
+            user=request.user, email=email, feedback=feedback)
         testimony_u.save()
 
         messages.success(request, 'Feedback received, Thank you!!!')
@@ -396,17 +402,80 @@ def testimony(request):
 
 def breakfast(request):
     # items_search = FoodList.objects.filter('SearchName').first()
+
     items = FoodList.objects.all()
     calories = DCalorie.objects.get(user=request.user)
     current_time = timezone.now()
     current_day = current_time.strftime('%A')
     query = request.GET.get('search_food')
+
     if query:
-        results = FoodList.objects.filter(SearchName__icontains=query).first()
+        results = FoodList.objects.filter(SearchName__icontains=query)
+
     else:
+        print('not items')
+        query = ""
         results = []
         messages.error(request, 'No items found')
+
+    current_breakfast = ""
+
+    try:
+        current_breakfast = MealPlan.objects.get(user=request.user).breakfast
+    except Exception as e:
+        print(e)
+
     # else:
     #     meal_plan = MealPlan(user=request.user, day=current_day, breakfast=request.POST['breakfast'])
     return render(request, 'diet/breakfast.html', {'current_time': current_time, 'current_day': current_day,
-                                                   'calories': calories, 'items': items, 'results': results})
+                                                   'calories': calories, 'items': items, 'results': results, "current_breakfast": current_breakfast, "query": query})
+
+
+def set_breakfast(request, id):
+    user = request.user
+
+    food_items = FoodList.objects.get(id=id)
+    try:
+        meal_plan = MealPlan.objects.get(user=user)
+    except Exception as e:
+        meal_plan = MealPlan(user=user)
+
+    meal_plan.update_breakfast(food_items)
+    # meal_plan.save()
+    # calories = DCalorie.objects.get(user=request.user)
+    # current_time = timezone.now()
+    # current_day = current_time.strftime('%A')
+    # query = request.GET.get('search_food')
+    # if query:
+    #     results = FoodList.objects.filter(SearchName__icontains=query).first()
+    # else:
+    #     results = []
+    #     messages.error(request, 'No items found')
+    # else:
+    #     meal_plan = MealPlan(user=request.user, day=current_day, breakfast=request.POST['breakfast'])
+    return redirect('diet:breakfast')
+
+
+def search_foods(request, query):
+    user = request.user
+
+    food_items = FoodList.objects.filter()
+    try:
+        meal_plan = MealPlan.objects.get(user=user)
+    except Exception as e:
+        meal_plan = MealPlan(user=user)
+
+    meal_plan.update_breakfast(food_items)
+    # meal_plan.save()
+    # calories = DCalorie.objects.get(user=request.user)
+    # current_time = timezone.now()
+    # current_day = current_time.strftime('%A')
+    # query = request.GET.get('search_food')
+    # if query:
+    #     results = FoodList.objects.filter(SearchName__icontains=query).first()
+    # else:
+    #     results = []
+    #     messages.error(request, 'No items found')
+    # else:
+    #     meal_plan = MealPlan(user=request.user, day=current_day, breakfast=request.POST['breakfast'])
+    return redirect('diet:breakfast')

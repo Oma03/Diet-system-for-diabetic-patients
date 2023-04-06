@@ -121,28 +121,27 @@ class MealPlan(models.Model):
         ('Sunday', 'Sunday'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    week_id = models.IntegerField(unique=True)
-    day = models.CharField(max_length=10, default=timezone.now().strftime('%A'), choices=DAY_CHOICES)
-    breakfast = models.CharField(max_length=100, null=True)
-    lunch = models.CharField(max_length=100, null=True)
-    snack = models.CharField(max_length=100, null=True)
-    dinner = models.CharField(max_length=100, null=True)
-    breakfast_carb_gram = models.CharField(max_length=100, null=True)
-    breakfast_protein_gram = models.CharField(max_length=100, null=True)
-    breakfast_fat_gram = models.CharField(max_length=100, null=True)
-    lunch_carb_gram = models.CharField(max_length=100, null=True)
-    lunch_protein_gram = models.CharField(max_length=100, null=True)
-    lunch_fat_gram = models.CharField(max_length=100, null=True)
-    snack_carb_gram = models.CharField(max_length=100, null=True)
-    snack_protein_gram = models.CharField(max_length=100, null=True)
-    snack_fat_gram = models.CharField(max_length=100, null=True)
-    dinner_carb_gram = models.CharField(max_length=100, null=True)
-    dinner_protein_gram = models.CharField(max_length=100, null=True)
-    dinner_fat_gram = models.CharField(max_length=100, null=True)
+    week_id = models.IntegerField(unique=True, null=True)
+    day = models.CharField(
+        max_length=10, default=timezone.now().strftime('%A'), choices=DAY_CHOICES)
+    breakfast = models.ForeignKey(
+        FoodList, null=True, on_delete=models.SET_NULL, related_name="food_breakfast")
+    lunch = models.ForeignKey(
+        FoodList, null=True, on_delete=models.SET_NULL, related_name="food_lunch")
+    snack = models.ForeignKey(
+        FoodList, null=True, on_delete=models.SET_NULL, related_name="food_snack")
+    dinner = models.ForeignKey(
+        FoodList, null=True, on_delete=models.SET_NULL, related_name="food_dinner")
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def update_breakfast(self, breakfast: FoodList):
+        self.breakfast = breakfast
+        self.week_id = self.generate_week_id()
+        self.save()
+
     def generate_week_id(self):
-        user_tz = pytz.timezone(self.user.Contact.timezone)
+        contact = Contact.objects.get(user=self.user)
+        user_tz = pytz.timezone(contact.timezone)
         start_date = (self.created_at.astimezone(user_tz) - timedelta(
             days=self.created_at.astimezone(user_tz).weekday())).date()
         current_date = timezone.now().astimezone(user_tz).date()
@@ -153,8 +152,8 @@ class MealPlan(models.Model):
         return week_number
 
     def save(self, *args, **kwargs):
-        if not self.week_id:
-            self.week_id = self.generate_week_id()
+        # if not self.week_id:
+        #     self.week_id = self.generate_week_id()
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -168,4 +167,3 @@ class Doctors(models.Model):
 
     def __str__(self):
         return self.email
-

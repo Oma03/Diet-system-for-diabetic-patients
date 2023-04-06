@@ -17,4 +17,6 @@ urlpatterns = [
     path('testimony/', views.testimony, name='testimony'),
     path('breakfast/', views.breakfast, name='breakfast'),
     path('forgot/', views.forgot, name='forgot'),
+    path('breakfast/set_breakfast/<id>',
+         views.set_breakfast, name='set_breakfast'),
 ]
