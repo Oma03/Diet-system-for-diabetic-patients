@@ -71,18 +71,20 @@
       <div class="form_container">
           <div class="section1">
               <h1 class="create_page">Meal Plan for {{current_day}}</h1>
+              <ul class="navbar__menu">
                 <li class="navbar__item">
                 <a href="{% url 'diet:breakfast' %}" class="navbar__links">Breakfast</a>
                 </li>
                 <li class="navbar__item">
-                <a href="{% url 'diet:breakfast' %}" class="navbar__links">Breakfast</a>
+                <a href="{% url 'diet:lunch' %}" class="navbar__links">Lunch</a>
                 </li>
                 <li class="navbar__item">
-                <a href="{% url 'diet:breakfast' %}" class="navbar__links">Breakfast</a>
+                <a href="{% url 'diet:snack' %}" class="navbar__links">Snack</a>
                 </li>
                <li class="navbar__item">
-                <a href="{% url 'diet:breakfast' %}" class="navbar__links">Breakfast</a>
+                <a href="{% url 'diet:dinner' %}" class="navbar__links">Dinner</a>
                 </li>
+              </ul>
           </div>
           <div class="section2">
               <h1 class="create_page">Daily Calorie for {{current_day}}</h1>
@@ -111,7 +113,6 @@
                 </div>
                 <div class="footer__link--items">
                     <h2>Testimonials</h2>
-                    <a href="{% url 'diet:about' %}">How It Works</a>
                     <a href="{% url 'diet:testimony' %}">Give your feedback</a>
                 </div>
                 <div class="footer__link--items">

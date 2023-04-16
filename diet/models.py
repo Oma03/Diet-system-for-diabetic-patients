@@ -139,6 +139,21 @@ class MealPlan(models.Model):
         self.week_id = self.generate_week_id()
         self.save()
 
+    def update_lunch(self, lunch: FoodList):
+        self.lunch = lunch
+        self.week_id = self.generate_week_id()
+        self.save()
+
+    def update_snack(self, snack: FoodList):
+        self.snack = snack
+        self.week_id = self.generate_week_id()
+        self.save()
+
+    def update_dinner(self, dinner: FoodList):
+        self.dinner = dinner
+        self.week_id = self.generate_week_id()
+        self.save()
+
     def generate_week_id(self):
         contact = Contact.objects.get(user=self.user)
         user_tz = pytz.timezone(contact.timezone)

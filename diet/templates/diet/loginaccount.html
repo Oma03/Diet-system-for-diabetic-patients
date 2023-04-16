@@ -44,7 +44,7 @@
             <h2>LOG IN</h2>
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
+                    <div class="alert alert-error">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -53,9 +53,7 @@
                 {% csrf_token %}
                 <input type="text" class="main__field" placeholder="Username" name="username">
                 <input type="password" class="main__field" placeholder="Password" name="pass2">
-                <li class="navbar__item">
-                 <a href="{% url 'diet:forgot' %}" class="navbar__links">Forgot Password</a>
-                </li>
+                <a href="{% url 'diet:forgot' %}" class="navbar__links">Forgot Password</a>
                 <button type="submit" class="main__btn"><span>Log In</span></button>
             </form>
         </div>

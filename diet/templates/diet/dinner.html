@@ -90,8 +90,8 @@
                 <h1 class="create_page">Meal Plan for {{current_day}}</h1>
                 <form method="POST" class="main__form">
                     {% csrf_token %}
-                    <input type="text" name="breakfast" readonly value="{{current_breakfast.EnglishName}}"
-                        placeholder="Breakfast" class="main__field">
+                    <input type="text" name="dinner" readonly value="{{current_dinner.EnglishName}}"
+                        placeholder="Dinner" class="main__field">
                     <br>
                     <button type="submit" class="main__btn"><span>Save</span></button>
                 </form>
@@ -154,7 +154,7 @@
                             const itemId = this.getAttribute('data-item-id');
                             // console.log("hmmmmmmmmmm")
                             // Replace 'your_view_url' with the URL for the specific view you want to trigger
-                            window.location.href = 'set_breakfast/' + itemId;
+                            window.location.href = 'set_dinner/' + itemId;
                         });
                     });
                 });

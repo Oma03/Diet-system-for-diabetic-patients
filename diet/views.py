@@ -78,17 +78,18 @@ def forgot(request):
         email = request.POST.get('email')
         pass1 = request.POST.get('pass1')
         pass2 = request.POST.get('pass2')
-        try:
-            User.objects.get(email=email)
+
+        user = authenticate(email=email)
+        if user is not None:
             if pass1 == pass2:
-                user = User.objects.update_user(password=pass2)
+                user.set_password(pass2)
                 user.save()
                 messages.success(request, 'Password successfully changed')
                 return render(request, 'diet/index.html')
             else:
                 messages.error(request, 'Passwords do not match')
                 return render(request, 'diet/forgot.html')
-        except:
+        else:
             messages.error(request, 'Invalid email')
             return render(request, 'diet/forgot.html')
 
@@ -425,57 +426,187 @@ def breakfast(request):
     except Exception as e:
         print(e)
 
-    # else:
-    #     meal_plan = MealPlan(user=request.user, day=current_day, breakfast=request.POST['breakfast'])
     return render(request, 'diet/breakfast.html', {'current_time': current_time, 'current_day': current_day,
-                                                   'calories': calories, 'items': items, 'results': results, "current_breakfast": current_breakfast, "query": query})
+                                                   'calories': calories, 'items': items, 'results': results,
+                                                   "current_breakfast": current_breakfast, "query": query})
 
 
 def set_breakfast(request, id):
     user = request.user
 
     food_items = FoodList.objects.get(id=id)
+    current_time = timezone.now()
+    current_day = current_time.strftime('%A')
+    # calories = DCalorie.objects.get(user=user)
     try:
         meal_plan = MealPlan.objects.get(user=user)
-    except Exception as e:
-        meal_plan = MealPlan(user=user)
-
+        calories = DCalorie.objects.get(user=user)
+        if calories.meal_carb_gram <= food_items.CHOCDF_g:
+            new_calories = float(calories.meal_carb_gram) - float(food_items.CHOCDF_g)
+            calories.update_meal_carb_gram(new_calories)
+            messages.success(request, 'Satisfied')
+    except MealPlan.DoesNotExist:
+        meal_plan = MealPlan(user=user, week_id=1, day=current_day, breakfast=food_items, lunch=None, snack=None,
+                             dinner=None)
+        meal_plan.save()
     meal_plan.update_breakfast(food_items)
-    # meal_plan.save()
-    # calories = DCalorie.objects.get(user=request.user)
-    # current_time = timezone.now()
-    # current_day = current_time.strftime('%A')
-    # query = request.GET.get('search_food')
-    # if query:
-    #     results = FoodList.objects.filter(SearchName__icontains=query).first()
-    # else:
-    #     results = []
-    #     messages.error(request, 'No items found')
-    # else:
-    #     meal_plan = MealPlan(user=request.user, day=current_day, breakfast=request.POST['breakfast'])
+
     return redirect('diet:breakfast')
 
 
-def search_foods(request, query):
+def lunch(request):
+    items = FoodList.objects.all()
+    calories = DCalorie.objects.get(user=request.user)
+    current_time = timezone.now()
+    current_day = current_time.strftime('%A')
+    query = request.GET.get('search_food')
+
+    if query:
+        results = FoodList.objects.filter(SearchName__icontains=query)
+
+    else:
+        print('not items')
+        query = ""
+        results = []
+        messages.error(request, 'No items found')
+
+    current_lunch = ""
+
+    try:
+        current_lunch = MealPlan.objects.get(user=request.user).lunch
+    except Exception as e:
+        print(e)
+
+    return render(request, 'diet/lunch.html', {'current_time': current_time, 'current_day': current_day,
+                                               'calories': calories, 'items': items, 'results': results,
+                                               "current_lunch": current_lunch, "query": query})
+
+
+def set_lunch(request, id):
     user = request.user
 
-    food_items = FoodList.objects.filter()
+    food_items = FoodList.objects.get(id=id)
+    current_time = timezone.now()
+    current_day = current_time.strftime('%A')
+    # calories = DCalorie.objects.get(user=user)
     try:
         meal_plan = MealPlan.objects.get(user=user)
-    except Exception as e:
-        meal_plan = MealPlan(user=user)
+        calories = DCalorie.objects.get(user=user)
+        if calories.meal_carb_gram <= food_items.CHOCDF_g:
+            new_calories = float(calories.meal_carb_gram) - float(food_items.CHOCDF_g)
+            calories.update_meal_carb_gram(new_calories)
+            messages.success(request, 'Satisfied')
+    except MealPlan.DoesNotExist:
+        meal_plan = MealPlan(user=user, week_id=1, day=current_day, breakfast=None, lunch=food_items, snack=None,
+                             dinner=None)
+        meal_plan.save()
+    meal_plan.update_lunch(food_items)
 
-    meal_plan.update_breakfast(food_items)
-    # meal_plan.save()
-    # calories = DCalorie.objects.get(user=request.user)
-    # current_time = timezone.now()
-    # current_day = current_time.strftime('%A')
-    # query = request.GET.get('search_food')
-    # if query:
-    #     results = FoodList.objects.filter(SearchName__icontains=query).first()
-    # else:
-    #     results = []
-    #     messages.error(request, 'No items found')
-    # else:
-    #     meal_plan = MealPlan(user=request.user, day=current_day, breakfast=request.POST['breakfast'])
-    return redirect('diet:breakfast')
+    return redirect('diet:lunch')
+
+
+def snack(request):
+    items = FoodList.objects.all()
+    calories = DCalorie.objects.get(user=request.user)
+    current_time = timezone.now()
+    current_day = current_time.strftime('%A')
+    query = request.GET.get('search_food')
+
+    if query:
+        results = FoodList.objects.filter(SearchName__icontains=query)
+
+    else:
+        print('not items')
+        query = ""
+        results = []
+        messages.error(request, 'No items found')
+
+    current_snack = ""
+
+    try:
+        current_snack = MealPlan.objects.get(user=request.user).snack
+    except Exception as e:
+        print(e)
+
+    return render(request, 'diet/snack.html', {'current_time': current_time, 'current_day': current_day,
+                                               'calories': calories, 'items': items, 'results': results,
+                                               "current_snack": current_snack, "query": query})
+
+
+def set_snack(request, id):
+    user = request.user
+
+    food_items = FoodList.objects.get(id=id)
+    current_time = timezone.now()
+    current_day = current_time.strftime('%A')
+    # calories = DCalorie.objects.get(user=user)
+    try:
+        meal_plan = MealPlan.objects.get(user=user)
+        calories = DCalorie.objects.get(user=user)
+        if calories.meal_carb_gram <= food_items.CHOCDF_g:
+            new_calories = float(calories.meal_carb_gram) - float(food_items.CHOCDF_g)
+            calories.update_meal_carb_gram(new_calories)
+            messages.success(request, 'Satisfied')
+    except MealPlan.DoesNotExist:
+        meal_plan = MealPlan(user=user, week_id=1, day=current_day, breakfast=None, lunch=None, snack=food_items,
+                             dinner=None)
+        meal_plan.save()
+    meal_plan.update_snack(food_items)
+
+    return redirect('diet:snack')
+
+
+def dinner(request):
+    items = FoodList.objects.all()
+    calories = DCalorie.objects.get(user=request.user)
+    current_time = timezone.now()
+    current_day = current_time.strftime('%A')
+    query = request.GET.get('search_food')
+
+    if query:
+        results = FoodList.objects.filter(SearchName__icontains=query)
+
+    else:
+        print('not items')
+        query = ""
+        results = []
+        messages.error(request, 'No items found')
+
+    current_dinner = ""
+
+    try:
+        current_dinner = MealPlan.objects.get(user=request.user).dinner
+    except Exception as e:
+        print(e)
+
+    return render(request, 'diet/dinner.html', {'current_time': current_time, 'current_day': current_day,
+                                               'calories': calories, 'items': items, 'results': results,
+                                               "current_dinner": current_dinner, "query": query})
+
+
+def set_dinner(request, id):
+    user = request.user
+
+    food_items = FoodList.objects.get(id=id)
+    current_time = timezone.now()
+    current_day = current_time.strftime('%A')
+    # calories = DCalorie.objects.get(user=user)
+    try:
+        meal_plan = MealPlan.objects.get(user=user)
+        calories = DCalorie.objects.get(user=user)
+        if calories.meal_carb_gram <= food_items.CHOCDF_g:
+            new_calories = float(calories.meal_carb_gram) - float(food_items.CHOCDF_g)
+            calories.update_meal_carb_gram(new_calories)
+            messages.success(request, 'Satisfied')
+    except MealPlan.DoesNotExist:
+        meal_plan = MealPlan(user=user, week_id=1, day=current_day, breakfast=None, lunch=None, snack=None,
+                             dinner=food_items)
+        meal_plan.save()
+    meal_plan.update_dinner(food_items)
+
+    return redirect('diet:dinner')
+
+
+def weekly_plan(request):
+    meal_plan = MealPlan.objects.get(user=request.user)
+

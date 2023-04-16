@@ -55,7 +55,7 @@
             <h2>CONTACT US </h2>
              {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
+                    <div class="alert alert-primary" role="alert">
                         {{ message }}
                     </div>
                 {% endfor %}
