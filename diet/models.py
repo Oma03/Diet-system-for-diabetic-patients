@@ -69,6 +69,18 @@ class DCalorie(models.Model):
     def __str__(self):
         return self.user.username
 
+    def update_meal_carb_gram(self, meal_carb_gram):
+        self.meal_carb_gram = meal_carb_gram
+        self.save()
+
+    def update_meal_protein_gram(self, meal_protein_gram):
+        self.meal_protein_gram = meal_protein_gram
+        self.save()
+
+    def update_meal_fat_gram(self, meal_fat_gram):
+        self.meal_fat_gram = meal_fat_gram
+        self.save()
+
 
 class FoodList(models.Model):
     Category = models.CharField(max_length=10000)

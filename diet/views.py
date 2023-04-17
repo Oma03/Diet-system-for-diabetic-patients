@@ -437,18 +437,66 @@ def set_breakfast(request, id):
     food_items = FoodList.objects.get(id=id)
     current_time = timezone.now()
     current_day = current_time.strftime('%A')
-    # calories = DCalorie.objects.get(user=user)
+    calories = DCalorie.objects.get(user=user)
     try:
         meal_plan = MealPlan.objects.get(user=user)
-        calories = DCalorie.objects.get(user=user)
-        if calories.meal_carb_gram <= food_items.CHOCDF_g:
-            new_calories = float(calories.meal_carb_gram) - float(food_items.CHOCDF_g)
-            calories.update_meal_carb_gram(new_calories)
-            messages.success(request, 'Satisfied')
     except MealPlan.DoesNotExist:
+        test = calories.meal_carb_gram
+        test1 = food_items.CHOCDF_g
+        if test1 <= test:
+            new_calories = float(test) - float(test1)
+            calories.update_meal_carb_gram(round(new_calories))
+            messages.success(request, f'{test1} amount used, {new_calories} remains')
+        else:
+            messages.error(request, 'The meal has a larger carbohydrate gram '
+                                    'than your required meal carbohydrate gram.')
+        test2 = calories.meal_protein_gram
+        test3 = food_items.PROTCNT_g
+        if test3 <= test2:
+            new_calories = float(test2) - float(test3)
+            calories.update_meal_protein_gram(round(new_calories))
+            messages.success(request, f'{test3} amount used, {new_calories} remains')
+        else:
+            messages.error(request, 'The meal has a larger protein gram '
+                                    'than your required meal protein gram.')
+        test4 = calories.meal_fat_gram
+        test5 = food_items.FATCE_g
+        if test5 <= test4:
+            new_calories = float(test4) - float(test5)
+            calories.update_meal_fat_gram(round(new_calories))
+            messages.success(request, f'{test5} amount used, {new_calories} remains')
+        else:
+            messages.error(request, 'The meal has a larger fat gram '
+                                    'than your required meal fat gram.')
+
         meal_plan = MealPlan(user=user, week_id=1, day=current_day, breakfast=food_items, lunch=None, snack=None,
                              dinner=None)
         meal_plan.save()
+    test = calories.meal_carb_gram
+    test1 = food_items.CHOCDF_g
+    if test1 <= test:
+        new_calories = float(test) - float(test1)
+        calories.update_meal_carb_gram(round(new_calories))
+        messages.success(request, f'{test1} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger carbohydrate gram than your required meal carbohydrate gram.')
+    test2 = calories.meal_protein_gram
+    test3 = food_items.PROTCNT_g
+    if test3 <= test2:
+        new_calories = float(test2) - float(test3)
+        calories.update_meal_protein_gram(round(new_calories))
+        messages.success(request, f'{test3} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger protein gram than your required meal protein gram.')
+    test4 = calories.meal_fat_gram
+    test5 = food_items.FATCE_g
+    if test5 <= test4:
+        new_calories = float(test4) - float(test5)
+        calories.update_meal_fat_gram(round(new_calories))
+        messages.success(request, f'{test5} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger fat gram than your required meal fat gram.')
+
     meal_plan.update_breakfast(food_items)
 
     return redirect('diet:breakfast')
@@ -488,18 +536,62 @@ def set_lunch(request, id):
     food_items = FoodList.objects.get(id=id)
     current_time = timezone.now()
     current_day = current_time.strftime('%A')
-    # calories = DCalorie.objects.get(user=user)
+    calories = DCalorie.objects.get(user=user)
     try:
         meal_plan = MealPlan.objects.get(user=user)
-        calories = DCalorie.objects.get(user=user)
-        if calories.meal_carb_gram <= food_items.CHOCDF_g:
-            new_calories = float(calories.meal_carb_gram) - float(food_items.CHOCDF_g)
-            calories.update_meal_carb_gram(new_calories)
-            messages.success(request, 'Satisfied')
     except MealPlan.DoesNotExist:
+        test = calories.meal_carb_gram
+        test1 = food_items.CHOCDF_g
+        if test1 <= test:
+            new_calories = float(test) - float(test1)
+            calories.update_meal_carb_gram(round(new_calories))
+            messages.success(request, f'{test1} amount used, {new_calories} remains')
+        else:
+            messages.error(request,
+                           'The meal has a larger carbohydrate gram than your required meal carbohydrate gram.')
+        test2 = calories.meal_protein_gram
+        test3 = food_items.PROTCNT_g
+        if test3 <= test2:
+            new_calories = float(test2) - float(test3)
+            calories.update_meal_protein_gram(round(new_calories))
+            messages.success(request, f'{test3} amount used, {new_calories} remains')
+        else:
+            messages.error(request, 'The meal has a larger protein gram than your required meal protein gram.')
+        test4 = calories.meal_fat_gram
+        test5 = food_items.FATCE_g
+        if test5 <= test4:
+            new_calories = float(test4) - float(test5)
+            calories.update_meal_fat_gram(round(new_calories))
+            messages.success(request, f'{test5} amount used, {new_calories} remains')
+        else:
+            messages.error(request, 'The meal has a larger fat gram than your required meal fat gram.')
         meal_plan = MealPlan(user=user, week_id=1, day=current_day, breakfast=None, lunch=food_items, snack=None,
                              dinner=None)
         meal_plan.save()
+    test = calories.meal_carb_gram
+    test1 = food_items.CHOCDF_g
+    if test1 <= test:
+        new_calories = float(test) - float(test1)
+        calories.update_meal_carb_gram(round(new_calories))
+        messages.success(request, f'{test1} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger carbohydrate gram than your required meal carbohydrate gram.')
+    test2 = calories.meal_protein_gram
+    test3 = food_items.PROTCNT_g
+    if test3 <= test2:
+        new_calories = float(test2) - float(test3)
+        calories.update_meal_protein_gram(round(new_calories))
+        messages.success(request, f'{test3} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger protein gram than your required meal protein gram.')
+    test4 = calories.meal_fat_gram
+    test5 = food_items.FATCE_g
+    if test5 <= test4:
+        new_calories = float(test4) - float(test5)
+        calories.update_meal_fat_gram(round(new_calories))
+        messages.success(request, f'{test5} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger fat gram than your required meal fat gram.')
     meal_plan.update_lunch(food_items)
 
     return redirect('diet:lunch')
@@ -539,18 +631,62 @@ def set_snack(request, id):
     food_items = FoodList.objects.get(id=id)
     current_time = timezone.now()
     current_day = current_time.strftime('%A')
-    # calories = DCalorie.objects.get(user=user)
+    calories = DCalorie.objects.get(user=user)
     try:
         meal_plan = MealPlan.objects.get(user=user)
-        calories = DCalorie.objects.get(user=user)
-        if calories.meal_carb_gram <= food_items.CHOCDF_g:
-            new_calories = float(calories.meal_carb_gram) - float(food_items.CHOCDF_g)
-            calories.update_meal_carb_gram(new_calories)
-            messages.success(request, 'Satisfied')
     except MealPlan.DoesNotExist:
+        test = calories.meal_carb_gram
+        test1 = food_items.CHOCDF_g
+        if test1 <= test:
+            new_calories = float(test) - float(test1)
+            calories.update_meal_carb_gram(round(new_calories))
+            messages.success(request, f'{test1} amount used, {new_calories} remains')
+        else:
+            messages.error(request,
+                           'The meal has a larger carbohydrate gram than your required meal carbohydrate gram.')
+        test2 = calories.meal_protein_gram
+        test3 = food_items.PROTCNT_g
+        if test3 <= test2:
+            new_calories = float(test2) - float(test3)
+            calories.update_meal_protein_gram(round(new_calories))
+            messages.success(request, f'{test3} amount used, {new_calories} remains')
+        else:
+            messages.error(request, 'The meal has a larger protein gram than your required meal protein gram.')
+        test4 = calories.meal_fat_gram
+        test5 = food_items.FATCE_g
+        if test5 <= test4:
+            new_calories = float(test4) - float(test5)
+            calories.update_meal_fat_gram(round(new_calories))
+            messages.success(request, f'{test5} amount used, {new_calories} remains')
+        else:
+            messages.error(request, 'The meal has a larger fat gram than your required meal fat gram.')
         meal_plan = MealPlan(user=user, week_id=1, day=current_day, breakfast=None, lunch=None, snack=food_items,
                              dinner=None)
         meal_plan.save()
+    test = calories.meal_carb_gram
+    test1 = food_items.CHOCDF_g
+    if test1 <= test:
+        new_calories = float(test) - float(test1)
+        calories.update_meal_carb_gram(round(new_calories))
+        messages.success(request, f'{test1} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger carbohydrate gram than your required meal carbohydrate gram.')
+    test2 = calories.meal_protein_gram
+    test3 = food_items.PROTCNT_g
+    if test3 <= test2:
+        new_calories = float(test2) - float(test3)
+        calories.update_meal_protein_gram(round(new_calories))
+        messages.success(request, f'{test3} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger protein gram than your required meal protein gram.')
+    test4 = calories.meal_fat_gram
+    test5 = food_items.FATCE_g
+    if test5 <= test4:
+        new_calories = float(test4) - float(test5)
+        calories.update_meal_fat_gram(round(new_calories))
+        messages.success(request, f'{test5} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger fat gram than your required meal fat gram.')
     meal_plan.update_snack(food_items)
 
     return redirect('diet:snack')
@@ -590,18 +726,62 @@ def set_dinner(request, id):
     food_items = FoodList.objects.get(id=id)
     current_time = timezone.now()
     current_day = current_time.strftime('%A')
-    # calories = DCalorie.objects.get(user=user)
+    calories = DCalorie.objects.get(user=user)
     try:
         meal_plan = MealPlan.objects.get(user=user)
-        calories = DCalorie.objects.get(user=user)
-        if calories.meal_carb_gram <= food_items.CHOCDF_g:
-            new_calories = float(calories.meal_carb_gram) - float(food_items.CHOCDF_g)
-            calories.update_meal_carb_gram(new_calories)
-            messages.success(request, 'Satisfied')
     except MealPlan.DoesNotExist:
+        test = calories.meal_carb_gram
+        test1 = food_items.CHOCDF_g
+        if test1 <= test:
+            new_calories = float(test) - float(test1)
+            calories.update_meal_carb_gram(round(new_calories))
+            messages.success(request, f'{test1} amount used, {new_calories} remains')
+        else:
+            messages.error(request,
+                           'The meal has a larger carbohydrate gram than your required meal carbohydrate gram.')
+        test2 = calories.meal_protein_gram
+        test3 = food_items.PROTCNT_g
+        if test3 <= test2:
+            new_calories = float(test2) - float(test3)
+            calories.update_meal_protein_gram(round(new_calories))
+            messages.success(request, f'{test3} amount used, {new_calories} remains')
+        else:
+            messages.error(request, 'The meal has a larger protein gram than your required meal protein gram.')
+        test4 = calories.meal_fat_gram
+        test5 = food_items.FATCE_g
+        if test5 <= test4:
+            new_calories = float(test4) - float(test5)
+            calories.update_meal_fat_gram(round(new_calories))
+            messages.success(request, f'{test5} amount used, {new_calories} remains')
+        else:
+            messages.error(request, 'The meal has a larger fat gram than your required meal fat gram.')
         meal_plan = MealPlan(user=user, week_id=1, day=current_day, breakfast=None, lunch=None, snack=None,
                              dinner=food_items)
         meal_plan.save()
+    test = calories.meal_carb_gram
+    test1 = food_items.CHOCDF_g
+    if test1 <= test:
+        new_calories = float(test) - float(test1)
+        calories.update_meal_carb_gram(round(new_calories))
+        messages.success(request, f'{test1} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger carbohydrate gram than your required meal carbohydrate gram.')
+    test2 = calories.meal_protein_gram
+    test3 = food_items.PROTCNT_g
+    if test3 <= test2:
+        new_calories = float(test2) - float(test3)
+        calories.update_meal_protein_gram(round(new_calories))
+        messages.success(request, f'{test3} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger protein gram than your required meal protein gram.')
+    test4 = calories.meal_fat_gram
+    test5 = food_items.FATCE_g
+    if test5 <= test4:
+        new_calories = float(test4) - float(test5)
+        calories.update_meal_fat_gram(round(new_calories))
+        messages.success(request, f'{test5} amount used, {new_calories} remains')
+    else:
+        messages.error(request, 'The meal has a larger fat gram than your required meal fat gram.')
     meal_plan.update_dinner(food_items)
 
     return redirect('diet:dinner')
